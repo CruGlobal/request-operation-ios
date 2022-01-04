@@ -51,4 +51,15 @@ public enum RequestResponseError<HttpClientErrorResponseType: Decodable>: Error 
             return false
         }
     }
+    
+    public var requestCancelled: Bool {
+        
+        switch self {
+        case .requestCancelled:
+            return true
+            
+        default:
+            return false
+        }
+    }
 }
