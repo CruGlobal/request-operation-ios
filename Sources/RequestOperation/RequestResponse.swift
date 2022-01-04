@@ -41,7 +41,7 @@ public class RequestResponse {
     }
     #endif
     
-    public func getRequestError() -> RequestError? {
+    public func getResponseError() -> RequestResponseError? {
         
         if requestCancelled {
             return .requestCancelled

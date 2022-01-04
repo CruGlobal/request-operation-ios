@@ -1,5 +1,5 @@
 //
-//  RequestError.swift
+//  RequestResponseError.swift
 //  request-operation-ios
 //
 //  Created by Levi Eggert on 1/3/2022.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum RequestError: Error {
+public enum RequestResponseError: Error {
     
     case httpClientError(httpStatusCode: Int)
     case requestCancelled
