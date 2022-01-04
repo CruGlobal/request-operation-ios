@@ -12,11 +12,6 @@ public extension RequestResponse {
     
     func log() {
         
-        RequestResponse.log(urlRequest: urlRequest, data: data, urlResponse: urlResponse, requestError: requestError)
-    }
-    
-    static func log(urlRequest: URLRequest?, data: Data?, urlResponse: URLResponse?, requestError: Error?) {
-                
         print("\n \(String(describing: RequestResponse.self)) log() -----")
         
         print("  request.url: \(String(describing: urlRequest?.url?.absoluteString))")
@@ -55,8 +50,8 @@ public extension RequestResponse {
         
         print("  response json: \(String(describing: responseJson))")
         
-        if responseJson == nil, let data = data, let responseString = String(data: data, encoding: .utf8) {
-            print("  response string: \(responseString)")
+        if responseJson == nil, let dataString = self.dataString {
+            print("  response string: \(dataString)")
         }
         print("\n")
     }

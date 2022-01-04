@@ -23,6 +23,13 @@ public class RequestResponse {
         self.requestError = requestError
     }
     
+    public var dataString: String? {
+        guard let data = self.data else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
+    }
+    
     public var httpStatusCode: Int? {
         return (urlResponse as? HTTPURLResponse)?.statusCode
     }
@@ -40,26 +47,5 @@ public class RequestResponse {
         return requestErrorCode == Int(CFNetworkErrors.cfurlErrorNotConnectedToInternet.rawValue)
     }
     #endif
-    
-    public func getResponseError() -> RequestResponseError? {
-        
-        if requestCancelled {
-            return .requestCancelled
-        }
-        else if notConnectedToInternet {
-            return .noNetworkConnection
-        }
-        else if let httpStatusCode = httpStatusCode, httpStatusCode == 401 {
-            return .notAuthorized
-        }
-        else if let httpStatusCode = httpStatusCode, httpStatusCode >= 400 {
-            return .httpClientError(httpStatusCode: httpStatusCode)
-        }
-        else if let error = requestError {
-            return .requestError(error: error)
-        }
-        
-        return nil
-    }
 }
 

@@ -8,32 +8,36 @@
 
 import Foundation
 
-public enum RequestResponseError: Error {
+public enum RequestResponseError<HttpClientErrorResponseType: Decodable>: Error {
     
-    case httpClientError(httpStatusCode: Int)
-    case requestCancelled
+    case httpClientError(httpClientResponse: HttpClientErrorResponseType?, httpClientResponseDecodeError: Error?, httpStatusCode: Int)
     case noNetworkConnection
     case notAuthorized
+    case requestCancelled
     case requestError(error: Error)
+    case serverError(httpStatusCode: Int)
     
     public var errorMessage: String {
         
         switch self {
             
-        case .httpClientError(let httpStatusCode):
-            return "Http Client Error: \(httpStatusCode)"
+        case .httpClientError( _, _, let httpStatusCode):
+            return "Http Client Error:\n  httpStatusCode: \(httpStatusCode)"
                         
-        case .requestCancelled:
-            return "Request Cancelled"
-            
         case .noNetworkConnection:
             return "No Network Connection"
             
         case .notAuthorized:
             return "Not Authorized"
             
+        case .requestCancelled:
+            return "Request Cancelled"
+            
         case .requestError(let error):
             return "Error: \(error.localizedDescription)"
+            
+        case .serverError(let httpStatusCode):
+            return "Server Error:\n  httpStatusCode: \(httpStatusCode)"
         }
     }
     
