@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class RequestOperation: Operation {
+open class RequestOperation: Operation {
     
     public typealias Completion = ((_ response: RequestResponse) -> Void)
     
@@ -32,7 +32,7 @@ public class RequestOperation: Operation {
     
     public let session: URLSession
     
-    public required init(session: URLSession, urlRequest: URLRequest) {
+    public init(session: URLSession, urlRequest: URLRequest) {
         self.session = session
         self.urlRequest = urlRequest
         super.init()
@@ -46,7 +46,7 @@ public class RequestOperation: Operation {
         self.completion = completion
     }
     
-    public override func start() {
+    open override func start() {
         
         guard !isCancelled else {
             handleOperationCancelled()
@@ -55,30 +55,19 @@ public class RequestOperation: Operation {
         
         task = session.dataTask(with: urlRequest) { [weak self] (data: Data?, urlResponse: URLResponse?, error: Error?) in
             
-            self?.handleOperationFinished(data: data, urlResponse: urlResponse, requestError: error)
+            self?.completeOperation(data: data, urlResponse: urlResponse, requestError: error)
         }
         
         task?.resume()
         state = .executing
     }
     
-    public override func cancel() {
+    open override func cancel() {
         super.cancel()
         task?.cancel()
     }
     
-    private func handleOperationCancelled() {
-        
-        let cancelledError: Error = NSError(
-            domain: errorDomain,
-            code: NSURLErrorCancelled,
-            userInfo: [NSLocalizedDescriptionKey: "The operation was cancelled."]
-        )
-        
-        handleOperationFinished(data: nil, urlResponse: nil, requestError: cancelledError)
-    }
-    
-    private func handleOperationFinished(data: Data?, urlResponse: URLResponse?, requestError: Error?) {
+    open func completeOperation(data: Data?, urlResponse: URLResponse?, requestError: Error?) {
         
         state = .finished
         
@@ -92,6 +81,17 @@ public class RequestOperation: Operation {
         completion?(response)
     }
     
+    private func handleOperationCancelled() {
+        
+        let cancelledError: Error = NSError(
+            domain: errorDomain,
+            code: NSURLErrorCancelled,
+            userInfo: [NSLocalizedDescriptionKey: "The operation was cancelled."]
+        )
+        
+        completeOperation(data: nil, urlResponse: nil, requestError: cancelledError)
+    }
+
     // MARK: - State
     
     public override var isAsynchronous: Bool {
