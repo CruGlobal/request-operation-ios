@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'RequestOperation'
-    s.version          = '1.2.2'
+    s.version          = '1.3.0'
     s.summary          = 'Wrapper around URLSession.'
   
   
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   
     s.swift_version = '5.5'
     s.platforms = {
-        "ios": "9.0"
+        "ios": "13.0"
     }
   
     s.source_files = 'Sources/**/*.{swift}'    
