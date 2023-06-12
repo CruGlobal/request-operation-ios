@@ -10,7 +10,7 @@ import Foundation
 
 public class RequestBuilder {
     
-    public required init() {
+    public init() {
         
     }
     

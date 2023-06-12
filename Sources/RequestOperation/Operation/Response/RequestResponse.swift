@@ -31,7 +31,7 @@ public class RequestResponse {
     }
     
     public var httpStatusCode: Int? {
-        return (urlResponse as? HTTPURLResponse)?.statusCode
+        return urlResponse?.httpStatusCode
     }
     
     public var requestErrorCode: Int? {
