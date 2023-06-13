@@ -21,13 +21,9 @@ extension URLSession {
                 
                 let urlRequestResponse = UrlRequestResponse(data: data, urlResponse: urlResponse)
                 
-                guard urlRequestResponse.urlResponse.isSuccessHttpStatusCode else {
+                if let serverError = urlRequestResponse.getServerError() {
                     
-                    let errorCode: Int = -1
-                    let httpStatusCode: Int = urlRequestResponse.urlResponse.httpStatusCode ?? -1
-                    let errorMessage: String = "Send UrlRequest failed. Server responded with http status code: \(httpStatusCode)"
-                    
-                    throw NSError(domain: "", code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                    throw serverError
                 }
                 
                 return urlRequestResponse
