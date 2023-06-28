@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'RequestOperation'
-    s.version          = '1.3.1'
+    s.version          = '1.3.2'
     s.summary          = 'Wrapper around URLSession.'
   
   
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
     s.author           = { 'Levi Eggert' => 'levi.eggert@cru.org' }
     s.source           = { :git => 'https://github.com/CruGlobal/request-operation-ios.git', :tag => s.version.to_s }
   
-    s.swift_version = '5.5'
+    s.swift_version = '5.7'
     s.platforms = {
         "ios": "13.0"
     }
