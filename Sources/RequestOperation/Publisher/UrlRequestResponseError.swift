@@ -29,16 +29,21 @@ extension UrlRequestResponseError {
         }
     }
     
-    public var errorDescription: String {
+    public var error: Error {
         
         switch self {
         case .decodeError(let error):
-            return error.localizedDescription
+            return error
         case .httpStatusCodeError(let urlRequestResponse):
-            return "Failed with http status code error.  Http status code: \(urlRequestResponse.urlResponse.httpStatusCode ?? 0)"
+            let errorDescription: String = "Failed with http status code error.  Http status code: \(urlRequestResponse.urlResponse.httpStatusCode ?? 0)"
+            return NSError(domain: "Http Status Code Error", code: 0, userInfo: [NSLocalizedDescriptionKey: errorDescription])
         case .urlError(let urlError):
-            return NSError(domain: URLError.errorDomain, code: urlError.errorCode).localizedDescription
+            return NSError(domain: URLError.errorDomain, code: urlError.errorCode)
         }
+    }
+    
+    public var errorDescription: String {
+        return error.localizedDescription
     }
     
     public var httpStatusCode: Int? {
