@@ -11,20 +11,12 @@ import Combine
 
 extension URLSession {
     
-    public func sendUrlRequestPublisher(urlRequest: URLRequest) -> AnyPublisher<UrlRequestResponse, Error> {
+    public func sendUrlRequestPublisher(urlRequest: URLRequest) -> AnyPublisher<UrlRequestResponse, URLError> {
         
         return dataTaskPublisher(for: urlRequest)
-            .tryMap {
+            .map { (object: (data: Data, response: URLResponse)) in
                 
-                let data: Data = $0.data
-                let urlResponse: URLResponse = $0.response
-                
-                let urlRequestResponse = UrlRequestResponse(data: data, urlResponse: urlResponse)
-                
-                if let serverError = urlRequestResponse.getServerError() {
-                    
-                    throw serverError
-                }
+                let urlRequestResponse = UrlRequestResponse(data: object.data, urlResponse: object.response)
                 
                 return urlRequestResponse
             }
