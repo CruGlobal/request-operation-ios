@@ -29,16 +29,14 @@ extension Error {
     public func decodeRequestOperationUrlRequestResponseData<T: Decodable>() -> Result<T?, Error> {
         
         guard let data = getRequestOperationUrlRequestResponseData() else {
-            return .success(nil)
+            return .failure(self)
         }
         
         do {
-            
             let object: T = try JSONDecoder().decode(T.self, from: data)
             return .success(object)
         }
         catch let error {
-            
             return .failure(error)
         }
     }
