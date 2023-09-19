@@ -11,39 +11,33 @@ import Combine
 
 extension URLSession {
     
-    public func sendUrlRequestPublisher(urlRequest: URLRequest) -> AnyPublisher<UrlRequestResponse, UrlRequestResponseError> {
+    public func sendUrlRequestPublisher(urlRequest: URLRequest) -> AnyPublisher<UrlRequestResponse, Error> {
         
         return dataTaskPublisher(for: urlRequest)
-            .mapError { (urlError: URLError) in
-                                
-                return .urlError(urlError: urlError)
-            }
-            .flatMap({ (object: (data: Data, response: URLResponse)) -> AnyPublisher<UrlRequestResponse, UrlRequestResponseError> in
+            .tryMap {
                 
-                let urlRequestResponse = UrlRequestResponse(data: object.data, urlResponse: object.response)
+                let data: Data = $0.data
+                let urlResponse: URLResponse = $0.response
                 
-                guard urlRequestResponse.urlResponse.isSuccessHttpStatusCode else {
+                let urlRequestResponse = UrlRequestResponse(data: data, urlResponse: urlResponse)
+                
+                if let serverError = urlRequestResponse.getServerError() {
                     
-                    return Fail(error: .httpStatusCodeError(urlRequestResponse: urlRequestResponse))
-                        .eraseToAnyPublisher()
+                    throw serverError
                 }
                 
-                return Just(urlRequestResponse).setFailureType(to: UrlRequestResponseError.self)
-                    .eraseToAnyPublisher()
-            })
+                return urlRequestResponse
+            }
             .eraseToAnyPublisher()
     }
     
-    public func sendAndDecodeUrlRequestPublisher<T: Codable>(urlRequest: URLRequest) -> AnyPublisher<T, UrlRequestResponseError> {
+    public func sendAndDecodeUrlRequestPublisher<T: Codable>(urlRequest: URLRequest) -> AnyPublisher<T, Error> {
         
         return sendUrlRequestPublisher(urlRequest: urlRequest)
             .map {
                 return $0.data
             }
             .decode(type: T.self, decoder: JSONDecoder())
-            .mapError { (error: Error) in
-                return .decodeError(error: error)
-            }
             .eraseToAnyPublisher()
     }
 }
