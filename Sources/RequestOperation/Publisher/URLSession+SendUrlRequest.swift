@@ -11,6 +11,7 @@ import Combine
 
 extension URLSession {
     
+    @available(*, deprecated, message: "Will remove after transition to 1.6.0.")
     public func sendUrlRequestPublisher(urlRequest: URLRequest) -> AnyPublisher<UrlRequestResponse, Error> {
         
         return dataTaskPublisher(for: urlRequest)
@@ -31,6 +32,7 @@ extension URLSession {
             .eraseToAnyPublisher()
     }
     
+    @available(*, deprecated, message: "")
     public func sendAndDecodeUrlRequestPublisher<T: Codable>(urlRequest: URLRequest) -> AnyPublisher<T, Error> {
         
         return sendUrlRequestPublisher(urlRequest: urlRequest)
