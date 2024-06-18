@@ -23,15 +23,15 @@ concurrency:
 
 jobs:
 
-  # lint_ios_podspec:
-  #   name: Lint iOS Podspec
-  #   runs-on: macos-14
-  #   if: github.event_name == 'pull_request'
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #     - name: Lint Podspec
-  #       run: pod lib lint --private --verbose --sources=https://github.com/CruGlobal/cocoapods-specs.git,https://cdn.cocoapods.org/
+  lint_ios_podspec:
+    name: Lint iOS Podspec
+    runs-on: macos-14
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint Podspec
+        run: pod lib lint --private --verbose --sources=https://github.com/CruGlobal/cocoapods-specs.git,https://cdn.cocoapods.org/
 
   current_version:
     name: Store Current Version
