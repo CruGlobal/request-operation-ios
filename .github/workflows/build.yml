@@ -36,7 +36,7 @@ jobs:
   current_version:
     name: Store Current Version
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
@@ -49,7 +49,7 @@ jobs:
   print_current_version:
     name: Print Current Version
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: [ current_version ]
     steps:
       - name: Print Current Version
@@ -61,7 +61,7 @@ jobs:
   check_version:
     name: Check Version is Unreleased
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: [ current_version ]
     outputs:
       tag: ${{ steps.tag_name.outputs.tag }}
@@ -77,3 +77,33 @@ jobs:
         run: "! git ls-remote -t --exit-code origin $TAG_NAME"
         env:
           TAG_NAME: ${{ steps.tag_name.outputs.tag }}
+
+  push_podspec:
+    name: Push Podspec
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    needs: [ check_version ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Add CruGlobal CocoaPods Repo
+        run: |
+          run: pod repo add CruGlobal git@github.com:CruGlobal/cocoapods-specs.git
+      - name: Push podspec
+        run: |
+          run: pod repo push cruglobal-cocoapods-specs --private --verbose --sources=https://github.com/CruGlobal/cocoapods-specs.git,https://cdn.cocoapods.org/
+
+  tag_version:
+    name: Tag Version
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    needs: [ check_version, current_version ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create Tag
+        env:
+          TAG_NAME: ${{ needs.current_version.outputs.version }}
+        run: |
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
