@@ -6,17 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-  workflow_dispatch:
-    inputs:
-      releaseType:
-        description: 'Release Type'
-        required: true
-        default: 'snapshot'
-        type: choice
-        options:
-          - snapshot
-          - release
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
