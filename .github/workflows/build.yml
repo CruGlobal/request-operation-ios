@@ -80,7 +80,7 @@ jobs:
 
   push_podspec:
     name: Push Podspec
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: [ check_version ]
     steps:
