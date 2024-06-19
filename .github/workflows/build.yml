@@ -80,12 +80,16 @@ jobs:
 
   push_podspec:
     name: Push Podspec
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: [ check_version ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
