@@ -59,7 +59,7 @@ jobs:
           printf '%s\n' "$VERSION"
 
   check_version:
-    name: Check Version is Unreleased
+    name: Verify Version Is Not Released
     runs-on: ubuntu-latest
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: [ current_version ]
