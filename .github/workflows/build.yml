@@ -92,11 +92,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: Add CruGlobal CocoaPods Repo
-        run: |
-          run: pod repo add CruGlobal git@github.com:CruGlobal/cocoapods-specs.git
+        run: pod repo add CruGlobal git@github.com:CruGlobal/cocoapods-specs.git
       - name: Push podspec
-        run: |
-          run: pod repo push CruGlobal *.podspec --private --verbose --sources=https://github.com/CruGlobal/cocoapods-specs.git,https://cdn.cocoapods.org/
+        run: pod repo push CruGlobal *.podspec --private --verbose --sources=https://github.com/CruGlobal/cocoapods-specs.git,https://cdn.cocoapods.org/
 
   tag_version:
     name: Tag Version
