@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Will remove after transition to 1.6.0.")
 extension Error {
     
     public func getRequestOperationUrlRequestResponse() -> UrlRequestResponse? {

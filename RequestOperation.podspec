@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'RequestOperation'
-    s.version          = '1.5.1'
+    s.version          = '1.6.0'
     s.summary          = 'Wrapper around URLSession.'
   
   
