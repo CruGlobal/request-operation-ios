@@ -78,11 +78,26 @@ jobs:
         env:
           TAG_NAME: ${{ steps.tag_name.outputs.tag }}
 
+  tag_version:
+    name: Tag Version
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    needs: [ check_version, current_version, push_podspec ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create Tag
+        env:
+          TAG_NAME: ${{ needs.current_version.outputs.version }}
+        run: |
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
   push_podspec:
     name: Push Podspec
     runs-on: macos-14
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    needs: [ check_version ]
+    needs: [ check_version, tag_version ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -99,18 +114,3 @@ jobs:
         run: pod repo add CruGlobal git@github.com:CruGlobal/cocoapods-specs.git
       - name: Push podspec
         run: pod repo push CruGlobal *.podspec --private --verbose --sources=https://github.com/CruGlobal/cocoapods-specs.git,https://cdn.cocoapods.org/
-
-  tag_version:
-    name: Tag Version
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    needs: [ check_version, current_version, push_podspec ]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Create Tag
-        env:
-          TAG_NAME: ${{ needs.current_version.outputs.version }}
-        run: |
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
