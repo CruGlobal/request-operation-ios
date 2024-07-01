@@ -1,5 +1,5 @@
 //
-//  JsonApiResponseBaseObjectAttributes.swift
+//  JsonApiResponseBaseData.swift
 //  request-operation-ios
 //
 //  Created by Levi Eggert on 5/29/2024.
