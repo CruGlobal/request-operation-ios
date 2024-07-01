@@ -18,4 +18,8 @@ public struct RequestDataResponse {
         self.data = data
         self.urlResponse = urlResponse
     }
+    
+    public func getDataString() -> String? {
+        return String(data: data, encoding: .utf8)
+    }
 }
