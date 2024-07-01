@@ -17,18 +17,20 @@ open class ApiRequestHeaders {
     public let authorizationValue: String?
     public let contentTypeKey: String
     public let contentTypeValue: String?
+    public let additionalHeaders: [String: String]?
     
-    public init(authorizationKey: String = ApiRequestHeaders.defaultAuthorizationKey, authorizationValue: String? = nil, contentTypeKey: String = ApiRequestHeaders.defaultContentTypeKey, contentTypeValue: String? = nil) {
+    public init(authorizationKey: String = ApiRequestHeaders.defaultAuthorizationKey, authorizationValue: String? = nil, contentTypeKey: String = ApiRequestHeaders.defaultContentTypeKey, contentTypeValue: String? = nil, additionalHeaders: [String: String]? = nil) {
             
         self.authorizationKey = authorizationKey
         self.authorizationValue = authorizationValue
         self.contentTypeKey = contentTypeKey
         self.contentTypeValue = contentTypeValue
+        self.additionalHeaders = additionalHeaders
     }
     
     func getHeadersValue() -> [String: String] {
         
-        var headers: [String: String] = Dictionary()
+        var headers: [String: String] = additionalHeaders ?? Dictionary()
         
         if let contentType = contentTypeValue {
             headers[contentTypeKey] = contentType
