@@ -16,6 +16,18 @@ public enum RequestCodableResponseError: Error {
 
 extension RequestCodableResponseError {
     
+    public func getError() -> Error {
+        
+        switch self {
+        
+        case .decoderError(let decoderError):
+            return decoderError
+        
+        case .urlError(let urlError):
+            return urlError
+        }
+    }
+    
     public func getErrorDescription() -> String {
         
         switch self {
