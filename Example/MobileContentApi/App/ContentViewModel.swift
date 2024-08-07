@@ -29,7 +29,8 @@ class ContentViewModel: ObservableObject {
     private func getLanguages() {
         
         mobileContentApi
-            .languages
+            .languageResource
+            .getLanguagesEndpoint
             .getLanguages()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] (languages: [LanguageModel]) in
@@ -44,7 +45,8 @@ class ContentViewModel: ObservableObject {
     private func getLanguage() {
         
         mobileContentApi
-            .languages
+            .languageResource
+            .getLanguageEndpoint
             .getLanguage(id: "4")
             .receive(on: DispatchQueue.main)
             .sink { [weak self] (language: LanguageModel?) in
