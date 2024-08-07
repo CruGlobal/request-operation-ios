@@ -10,14 +10,12 @@ import Foundation
 
 open class RequestApi {
         
-    public let baseUrl: RequestBaseUrl
-    public let requestSender: RequestSender
-    public let endpoints: [ApiEndpoint]
+    public let context: RequestApiSharedContext
+    public let resources: [ApiResource]
     
-    public init(context: ApiEndpointContext, endpoints: [ApiEndpoint]) {
+    public init(context: RequestApiSharedContext, resources: [ApiResource]) {
         
-        self.baseUrl = context.baseUrl
-        self.requestSender = context.requestSender
-        self.endpoints = endpoints
+        self.context = context
+        self.resources = resources
     }
 }
