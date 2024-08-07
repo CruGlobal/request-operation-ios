@@ -14,58 +14,66 @@ public class RequestBuilder {
         
     }
     
-    public func build(session: URLSession, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?) -> URLRequest {
+    public func build(parameters: RequestBuilderParameters) -> URLRequest {
         
         let url: URL?
         
-        if let queryItems = queryItems, queryItems.count > 0 {
+        if let queryItems = parameters.queryItems, queryItems.count > 0 {
             
-            var urlComponents: URLComponents? = URLComponents(string: urlString)
+            var urlComponents: URLComponents? = URLComponents(string: parameters.urlString)
+            
             urlComponents?.queryItems = queryItems
             
             url = urlComponents?.url
         }
         else {
             
-            url = URL(string: urlString)
+            url = URL(string: parameters.urlString)
         }
         
         if let url = url {
-            let result: Result<URLRequest, Error> = build(session: session, url: url, method: method, headers: headers, httpBody: httpBody)
+            
+            let result: Result<URLRequest, Error> = build(
+                url: url,
+                parameters: parameters
+            )
+            
             switch result {
+            
             case .success(let request):
                 return request
+            
             case .failure(let error):
                 assertionFailure(error.localizedDescription)
                 return URLRequest(url: url)
             }
         }
         else {
-            let errorDescription: String = "Failed to build url with string: \(urlString)"
+            let errorDescription: String = "Failed to build url with string: \(parameters.urlString)"
             assertionFailure(errorDescription)
             return URLRequest(url: url!)
         }
     }
     
-    public func build(session: URLSession, url: URL, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?) -> Result<URLRequest, Error> {
-        
-        let configuration = session.configuration
-        
+    public func build(url: URL, parameters: RequestBuilderParameters) -> Result<URLRequest, Error> {
+                
         var urlRequest = URLRequest(
             url: url,
-            cachePolicy: configuration.requestCachePolicy,
-            timeoutInterval: configuration.timeoutIntervalForRequest
+            cachePolicy: parameters.requestCachePolicy,
+            timeoutInterval: parameters.timeoutIntervalForRequest
         )
         
-        if let headers = headers {
+        if let headers = parameters.headers, !headers.isEmpty {
+            
             for (key, value) in headers {
                 urlRequest.setValue(value, forHTTPHeaderField: key)
             }
         }
         
-        urlRequest.httpMethod = method.rawValue
+        urlRequest.httpMethod = parameters.method.rawValue
         
-        if let httpBody = httpBody {
+        if let httpBody = parameters.httpBody {
+            
             do {
                 urlRequest.httpBody = try JSONSerialization.data(withJSONObject: httpBody, options: [])
             }

@@ -11,22 +11,14 @@ import Combine
 
 public class RequestSender {
         
-    public init() {
+    public let session: URLSession
+    
+    public init(session: URLSession) {
         
+        self.session = session
     }
     
-    public func sendDataTaskPublisher(request: RequestInterface) -> AnyPublisher<RequestDataResponse, URLError> {
-        
-        let session: URLSession = request.urlSession
-        
-        let urlRequest: URLRequest = RequestBuilder().build(
-            session: session,
-            urlString: request.absoluteUrl,
-            method: request.method,
-            headers: request.headers,
-            httpBody: request.httpBody,
-            queryItems: request.queryItems
-        )
+    public func sendDataTaskPublisher(urlRequest: URLRequest) -> AnyPublisher<RequestDataResponse, URLError> {
         
         return session.dataTaskPublisher(for: urlRequest)
             .map { (tuple: (data: Data, response: URLResponse)) in
@@ -38,9 +30,9 @@ public class RequestSender {
             .eraseToAnyPublisher()
     }
     
-    public func sendAndDecodeDataTaskPublisher<T: Codable>(request: RequestInterface, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
+    public func sendAndDecodeDataTaskPublisher<T: Codable>(urlRequest: URLRequest, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
         
-        return sendDataTaskPublisher(request: request)
+        return sendDataTaskPublisher(urlRequest: urlRequest)
             .mapError { (urlError: URLError) in
                 return RequestCodableResponseError.urlError(urlError: urlError)
             }
