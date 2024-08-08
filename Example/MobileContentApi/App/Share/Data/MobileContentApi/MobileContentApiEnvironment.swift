@@ -24,12 +24,12 @@ enum MobileContentApiEnvironment {
 }
 
 extension MobileContentApiEnvironment {
-    var baseUrl: RequestBaseUrl {
+    var baseUrl: ApiBaseUrl {
         switch self {
         case .staging:
-            return RequestBaseUrl(scheme: .https, host: host)
+            return ApiBaseUrl(scheme: .https, host: host)
         case .production:
-            return RequestBaseUrl(scheme: .https, host: host)
+            return ApiBaseUrl(scheme: .https, host: host)
         }
     }
 }

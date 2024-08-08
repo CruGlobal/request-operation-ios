@@ -10,22 +10,26 @@ import RequestOperation
 
 class MobileContentApi: RequestApi {
     
-    let languages: LanguagesEndpoint
+    let languageResource: LanguageResource
     
     init(environment: MobileContentApiEnvironment) {
         
-        let context = ApiEndpointContext(
-            baseUrl: environment.baseUrl,
-            requestSender: RequestSender()
+        let baseUrl: ApiBaseUrl = environment.baseUrl
+        
+        let session: URLSession = RequestUrlSession.sharedIgnoreCacheSession
+        
+        let context = RequestApiSharedContext(
+            baseUrl: baseUrl,
+            session: session,
+            requestBuilder: RequestBuilder(),
+            requestSender: RequestSender(session: session)
         )
         
-        languages = LanguagesEndpoint(path: "languages", context: context)
+        languageResource = LanguageResource(context: context)
         
         super.init(
             context: context,
-            endpoints: [
-                languages
-            ]
+            resources: [languageResource]
         )
     }
 }

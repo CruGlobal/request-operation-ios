@@ -8,7 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		450E55AD2C10E6D7000B96D0 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450E55AC2C10E6D7000B96D0 /* ContentViewModel.swift */; };
-		450E55AF2C10F19B000B96D0 /* MobileContentApiHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450E55AE2C10F19B000B96D0 /* MobileContentApiHeaders.swift */; };
+		45208B2F2C626DF3000295F6 /* LanguageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45208B2D2C626DF3000295F6 /* LanguageResource.swift */; };
+		45208B322C626E0D000295F6 /* GetLanguagesEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45208B312C626E0D000295F6 /* GetLanguagesEndpoint.swift */; };
+		45208B342C626E14000295F6 /* GetLanguageEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45208B332C626E14000295F6 /* GetLanguageEndpoint.swift */; };
+		45208B372C626EE7000295F6 /* LanguageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45208B362C626EE7000295F6 /* LanguageModel.swift */; };
 		4538ADF42C10981200A7CFEC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4538ADF32C10981200A7CFEC /* Assets.xcassets */; };
 		4538ADF72C10981200A7CFEC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4538ADF62C10981200A7CFEC /* Preview Assets.xcassets */; };
 		4538AE012C10981200A7CFEC /* MobileContentApiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538AE002C10981200A7CFEC /* MobileContentApiTests.swift */; };
@@ -18,9 +21,8 @@
 		4538AE202C1098A100A7CFEC /* MobileContentApiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538AE1D2C1098A100A7CFEC /* MobileContentApiApp.swift */; };
 		4538AE222C1098B300A7CFEC /* MobileContentApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538AE212C1098B300A7CFEC /* MobileContentApi.swift */; };
 		4538AE2B2C109A2000A7CFEC /* RequestOperation in Frameworks */ = {isa = PBXBuildFile; productRef = 4538AE2A2C109A2000A7CFEC /* RequestOperation */; };
-		4538AE2F2C109B0800A7CFEC /* LanguagesEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538AE2E2C109B0800A7CFEC /* LanguagesEndpoint.swift */; };
-		4538AE322C109B9F00A7CFEC /* LanguageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538AE302C109B9F00A7CFEC /* LanguageModel.swift */; };
 		4538AE342C109D1300A7CFEC /* MobileContentApiEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4538AE332C109D1300A7CFEC /* MobileContentApiEnvironment.swift */; };
+		45DF3C5E2C62B26C001B8522 /* MobileContentApiHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DF3C5C2C62B26C001B8522 /* MobileContentApiHeaders.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,7 +44,10 @@
 
 /* Begin PBXFileReference section */
 		450E55AC2C10E6D7000B96D0 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
-		450E55AE2C10F19B000B96D0 /* MobileContentApiHeaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileContentApiHeaders.swift; sourceTree = "<group>"; };
+		45208B2D2C626DF3000295F6 /* LanguageResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageResource.swift; sourceTree = "<group>"; };
+		45208B312C626E0D000295F6 /* GetLanguagesEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLanguagesEndpoint.swift; sourceTree = "<group>"; };
+		45208B332C626E14000295F6 /* GetLanguageEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLanguageEndpoint.swift; sourceTree = "<group>"; };
+		45208B362C626EE7000295F6 /* LanguageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageModel.swift; sourceTree = "<group>"; };
 		4538ADEC2C10981100A7CFEC /* MobileContentApi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileContentApi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4538ADF32C10981200A7CFEC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4538ADF62C10981200A7CFEC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -55,9 +60,8 @@
 		4538AE1D2C1098A100A7CFEC /* MobileContentApiApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileContentApiApp.swift; sourceTree = "<group>"; };
 		4538AE212C1098B300A7CFEC /* MobileContentApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileContentApi.swift; sourceTree = "<group>"; };
 		4538AE282C109A1700A7CFEC /* request-operation-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "request-operation-ios"; path = ../../..; sourceTree = "<group>"; };
-		4538AE2E2C109B0800A7CFEC /* LanguagesEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagesEndpoint.swift; sourceTree = "<group>"; };
-		4538AE302C109B9F00A7CFEC /* LanguageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageModel.swift; sourceTree = "<group>"; };
 		4538AE332C109D1300A7CFEC /* MobileContentApiEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileContentApiEnvironment.swift; sourceTree = "<group>"; };
+		45DF3C5C2C62B26C001B8522 /* MobileContentApiHeaders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileContentApiHeaders.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +90,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		45208B2A2C626CF0000295F6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				45208B2E2C626DF3000295F6 /* Language */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		45208B2E2C626DF3000295F6 /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				45208B2D2C626DF3000295F6 /* LanguageResource.swift */,
+				45208B302C626E03000295F6 /* Endpoints */,
+				45208B352C626EDC000295F6 /* Models */,
+			);
+			path = Language;
+			sourceTree = "<group>";
+		};
+		45208B302C626E03000295F6 /* Endpoints */ = {
+			isa = PBXGroup;
+			children = (
+				45208B332C626E14000295F6 /* GetLanguageEndpoint.swift */,
+				45208B312C626E0D000295F6 /* GetLanguagesEndpoint.swift */,
+			);
+			path = Endpoints;
+			sourceTree = "<group>";
+		};
+		45208B352C626EDC000295F6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				45208B362C626EE7000295F6 /* LanguageModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		4538ADE32C10981100A7CFEC = {
 			isa = PBXGroup;
 			children = (
@@ -148,8 +187,8 @@
 			children = (
 				4538AE212C1098B300A7CFEC /* MobileContentApi.swift */,
 				4538AE332C109D1300A7CFEC /* MobileContentApiEnvironment.swift */,
-				450E55AE2C10F19B000B96D0 /* MobileContentApiHeaders.swift */,
-				4538AE2C2C109AE600A7CFEC /* Endpoints */,
+				45DF3C5D2C62B26C001B8522 /* Headers */,
+				45208B2A2C626CF0000295F6 /* Resources */,
 			);
 			path = MobileContentApi;
 			sourceTree = "<group>";
@@ -196,29 +235,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4538AE2C2C109AE600A7CFEC /* Endpoints */ = {
+		45DF3C5D2C62B26C001B8522 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				4538AE2D2C109AF200A7CFEC /* Languages */,
+				45DF3C5C2C62B26C001B8522 /* MobileContentApiHeaders.swift */,
 			);
-			path = Endpoints;
-			sourceTree = "<group>";
-		};
-		4538AE2D2C109AF200A7CFEC /* Languages */ = {
-			isa = PBXGroup;
-			children = (
-				4538AE2E2C109B0800A7CFEC /* LanguagesEndpoint.swift */,
-				4538AE312C109B9F00A7CFEC /* Models */,
-			);
-			path = Languages;
-			sourceTree = "<group>";
-		};
-		4538AE312C109B9F00A7CFEC /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				4538AE302C109B9F00A7CFEC /* LanguageModel.swift */,
-			);
-			path = Models;
+			path = Headers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -355,13 +377,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				4538AE222C1098B300A7CFEC /* MobileContentApi.swift in Sources */,
-				450E55AF2C10F19B000B96D0 /* MobileContentApiHeaders.swift in Sources */,
 				4538AE202C1098A100A7CFEC /* MobileContentApiApp.swift in Sources */,
 				4538AE342C109D1300A7CFEC /* MobileContentApiEnvironment.swift in Sources */,
+				45208B2F2C626DF3000295F6 /* LanguageResource.swift in Sources */,
+				45DF3C5E2C62B26C001B8522 /* MobileContentApiHeaders.swift in Sources */,
+				45208B322C626E0D000295F6 /* GetLanguagesEndpoint.swift in Sources */,
+				45208B342C626E14000295F6 /* GetLanguageEndpoint.swift in Sources */,
+				45208B372C626EE7000295F6 /* LanguageModel.swift in Sources */,
 				450E55AD2C10E6D7000B96D0 /* ContentViewModel.swift in Sources */,
-				4538AE2F2C109B0800A7CFEC /* LanguagesEndpoint.swift in Sources */,
 				4538AE1F2C1098A100A7CFEC /* ContentView.swift in Sources */,
-				4538AE322C109B9F00A7CFEC /* LanguageModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

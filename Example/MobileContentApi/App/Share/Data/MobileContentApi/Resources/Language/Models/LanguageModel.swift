@@ -1,9 +1,8 @@
 //
 //  LanguageModel.swift
-//  godtools
+//  MobileContentApi
 //
-//  Created by Levi Eggert on 6/10/20.
-//  Copyright © 2020 Cru. All rights reserved.
+//  Created by Levi Eggert on 8/6/24.
 //
 
 import Foundation
@@ -56,3 +55,4 @@ extension LanguageModel: Equatable {
         return lhs.id == rhs.id
     }
 }
+
