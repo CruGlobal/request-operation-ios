@@ -17,6 +17,16 @@ public class RequestBuilder {
         self.requestMutator = requestMutator
     }
     
+    public init(requestBuilder: RequestBuilder, requestMutator: RequestMutator?) {
+        
+        self.requestMutator = requestMutator ?? requestBuilder.requestMutator
+    }
+    
+    public func clone(requestMutator: RequestMutator? = nil) -> RequestBuilder {
+        
+        return RequestBuilder(requestBuilder: self, requestMutator: requestMutator)
+    }
+    
     public func build(parameters: RequestBuilderParameters) -> URLRequest {
         
         let url: URL?
