@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
     s.name = 'RequestOperation'
-    s.version = '1.7.0'
+    s.version = '1.7.1'
     s.summary = 'Wrapper around URLSession.'
     s.description = 'A swift package to facilitate in creation of URLRequests (RequestBuilder) and provides an Operation (RequestOperation) for submitting requests from an OperationQueue. Completed RequestOperations will provide a RequestResponse object with some details about the completed request.'
     s.homepage = 'https://github.com/CruGlobal/request-operation-ios'
