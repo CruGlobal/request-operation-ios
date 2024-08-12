@@ -10,8 +10,11 @@ import Foundation
 
 public class RequestBuilder {
     
-    public init() {
+    private let requestMutator: RequestMutator?
+    
+    public init(requestMutator: RequestMutator? = nil) {
         
+        self.requestMutator = requestMutator
     }
     
     public func build(parameters: RequestBuilderParameters) -> URLRequest {
@@ -31,27 +34,26 @@ public class RequestBuilder {
             url = URL(string: parameters.urlString)
         }
         
-        if let url = url {
+        guard let url = url else {
             
-            let result: Result<URLRequest, Error> = build(
-                url: url,
-                parameters: parameters
-            )
-            
-            switch result {
-            
-            case .success(let request):
-                return request
-            
-            case .failure(let error):
-                assertionFailure(error.localizedDescription)
-                return URLRequest(url: url)
-            }
-        }
-        else {
             let errorDescription: String = "Failed to build url with string: \(parameters.urlString)"
             assertionFailure(errorDescription)
             return URLRequest(url: url!)
+        }
+        
+        let result: Result<URLRequest, Error> = build(
+            url: url,
+            parameters: parameters
+        )
+        
+        switch result {
+        
+        case .success(let request):
+            return request
+        
+        case .failure(let error):
+            assertionFailure(error.localizedDescription)
+            return URLRequest(url: url)
         }
     }
     
@@ -80,6 +82,10 @@ public class RequestBuilder {
             catch let error {
                 return .failure(error)
             }
+        }
+        
+        if let requestMutator = self.requestMutator {
+            requestMutator.mutate(request: &urlRequest, parameters: parameters)
         }
     
         return .success(urlRequest)
