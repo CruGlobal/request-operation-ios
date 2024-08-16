@@ -26,4 +26,11 @@ class ApiBaseUrlTests: XCTestCase {
         
         XCTAssertTrue(baseUrl.absoluteUrl == "https://mobile-content-api.cru.org")
     }
+    
+    func testUrl() {
+        
+        let baseUrl = ApiBaseUrl(scheme: .https, host: mobileContentApiHost)
+        
+        XCTAssertTrue(baseUrl.url?.absoluteString == "https://mobile-content-api.cru.org")
+    }
 }
