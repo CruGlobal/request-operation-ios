@@ -29,36 +29,4 @@ public class RequestSender {
             }
             .eraseToAnyPublisher()
     }
-    
-    public func sendAndDecodeDataTaskPublisher<T: Codable>(urlRequest: URLRequest, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
-        
-        return sendDataTaskPublisher(urlRequest: urlRequest)
-            .mapError { (urlError: URLError) in
-                return RequestCodableResponseError.urlError(urlError: urlError)
-            }
-            .tryMap { (response: RequestDataResponse) in
-                
-                guard response.urlResponse.isSuccessHttpStatusCode else {
-                    return RequestCodableResponse(codable: nil, requestDataResponse: response)
-                }
-                
-                do {
-                    
-                    let object: T? = try decoder.decode(T.self, from: response.data)
-                    
-                    return RequestCodableResponse<T>(
-                        codable: object,
-                        requestDataResponse: response
-                    )
-                }
-                catch let decodeError {
-                    throw decodeError
-                }
-            }
-            .mapError { (decodeError: Error) in
-                RequestCodableResponseError.decoderError(decoderError: decodeError)
-            }
-            .eraseToAnyPublisher()
-    }
 }
-
