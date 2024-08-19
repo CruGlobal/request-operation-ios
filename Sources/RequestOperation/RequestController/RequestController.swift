@@ -52,51 +52,65 @@ public class RequestController {
         
         return requestSender
             .sendDataTaskPublisher(urlRequest: urlRequest)
-            .flatMap({ [weak self] (response: RequestDataResponse) -> AnyPublisher<RequestDataResponse, URLError> in
+            .flatMap({ (response: RequestDataResponse) -> AnyPublisher<RequestDataResponse, URLError> in
                 
-                guard let weakSelf = self else {
-                    
-                    return Just(response)
-                        .setFailureType(to: URLError.self)
-                        .eraseToAnyPublisher()
-                }
-                
-                let retryPolicy: RetryPolicy
-                
-                if let requestRetrier = weakSelf.requestRetrier {
-                    
-                    retryPolicy = requestRetrier.shouldRetryRequest(
-                        response: response,
-                        httpStatusCode: response.urlResponse.httpStatusCode,
-                        isSuccessHttpStatusCode: response.urlResponse.isSuccessHttpStatusCode
-                    )
-                }
-                else {
-                    
-                    retryPolicy = .doNotRetry
-                }
-                
-                switch retryPolicy {
-               
-                case .doNotRetry:
-                    
-                    return Just(response)
-                        .setFailureType(to: URLError.self)
-                        .eraseToAnyPublisher()
-                    
-                case .retry( _):
-                    
-                    return weakSelf.internalBuildAndSendRequestPublisher(
-                        urlString: urlString,
-                        method: method,
-                        headers: headers,
-                        httpBody: httpBody,
-                        queryItems: queryItems,
-                        timeoutIntervalForRequest: timeoutIntervalForRequest
-                    )
-                    .eraseToAnyPublisher()
-                }
+                return self.retryRequestIfNeededPublisher(
+                    response: response,
+                    urlString: urlString,
+                    method: method,
+                    headers: headers,
+                    httpBody: httpBody,
+                    queryItems: queryItems,
+                    timeoutIntervalForRequest: timeoutIntervalForRequest
+                )
             })
             .eraseToAnyPublisher()
+    }
+    
+    private func retryRequestIfNeededPublisher(response: RequestDataResponse, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, URLError> {
+        
+        guard let requestRetrier = self.requestRetrier else {
+            return Just(response)
+                .setFailureType(to: URLError.self)
+                .eraseToAnyPublisher()
+        }
+        
+        return requestRetrier.shouldRetryRequestPublisher(
+            response: response,
+            httpStatusCode: response.urlResponse.httpStatusCode,
+            isSuccessHttpStatusCode: response.urlResponse.isSuccessHttpStatusCode
+        )
+        .setFailureType(to: URLError.self)
+        .flatMap({ [weak self] (retryPolicy: RetryPolicy) -> AnyPublisher<RequestDataResponse, URLError> in
+                   
+            guard let weakSelf = self else {
+                
+                return Just(response)
+                    .setFailureType(to: URLError.self)
+                    .eraseToAnyPublisher()
+            }
+            
+            switch retryPolicy {
+           
+            case .doNotRetry:
+                
+                return Just(response)
+                    .setFailureType(to: URLError.self)
+                    .eraseToAnyPublisher()
+                
+            case .retry( _):
+                
+                return weakSelf.internalBuildAndSendRequestPublisher(
+                    urlString: urlString,
+                    method: method,
+                    headers: headers,
+                    httpBody: httpBody,
+                    queryItems: queryItems,
+                    timeoutIntervalForRequest: timeoutIntervalForRequest
+                )
+                .eraseToAnyPublisher()
+            }
+        })
+        .eraseToAnyPublisher()
     }
 }
