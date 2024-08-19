@@ -27,30 +27,4 @@ open class ApiEndpoint {
         self.resourceUrl = resourceUrl
         self.requestController = requestController
     }
-    
-    public func buildAndSendRequestPublisher<T: Codable>(method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
-        
-        return buildAndSendRequestPublisher(
-            urlString: resourceUrl.absoluteUrl,
-            method: method,
-            headers: headers,
-            httpBody: httpBody,
-            queryItems: queryItems,
-            timeoutIntervalForRequest: timeoutIntervalForRequest
-        )
-        .eraseToAnyPublisher()
-    }
-    
-    public func buildAndSendRequestPublisher<T: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
-        
-        return requestController.buildAndSendRequestPublisher(
-            urlString: urlString,
-            method: method,
-            headers: headers,
-            httpBody: httpBody,
-            queryItems: queryItems,
-            timeoutIntervalForRequest: timeoutIntervalForRequest
-        )
-        .eraseToAnyPublisher()
-    }
 }
