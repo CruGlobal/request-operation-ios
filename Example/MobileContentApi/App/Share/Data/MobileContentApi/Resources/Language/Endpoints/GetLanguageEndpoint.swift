@@ -13,7 +13,7 @@ class GetLanguageEndpoint: ApiEndpoint {
     
     func getLanguage(id: String) -> AnyPublisher<LanguageModel?, Never> {
         
-        return super.buildAndSendRequestPublisher(
+        return requestController.buildAndSendRequestPublisher(
             urlString: resourceUrl.absoluteUrl + "/" + id,
             method: .get,
             headers: MobileContentApiHeaders.nonAuthorizedHeaders().getHeadersValue(),
