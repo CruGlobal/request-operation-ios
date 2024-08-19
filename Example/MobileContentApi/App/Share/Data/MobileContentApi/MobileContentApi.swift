@@ -18,11 +18,16 @@ class MobileContentApi: RequestApi {
         
         let session: URLSession = RequestUrlSession.sharedIgnoreCacheSession
         
+        let requestController = RequestController(
+            requestBuilder: RequestBuilder(),
+            requestSender: RequestSender(session: session),
+            requestRetrier: nil
+        )
+        
         let context = RequestApiSharedContext(
             baseUrl: baseUrl,
             session: session,
-            requestBuilder: RequestBuilder(),
-            requestSender: RequestSender(session: session)
+            requestController: requestController
         )
         
         languageResource = LanguageResource(context: context)

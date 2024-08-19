@@ -12,14 +12,12 @@ open class RequestApiSharedContext {
     
     public let baseUrl: ApiBaseUrl
     public let session: URLSession
-    public let requestBuilder: RequestBuilder
-    public let requestSender: RequestSender
+    public let requestController: RequestController
     
-    public init(baseUrl: ApiBaseUrl, session: URLSession, requestBuilder: RequestBuilder, requestSender: RequestSender) {
+    public init(baseUrl: ApiBaseUrl, session: URLSession, requestController: RequestController) {
        
         self.baseUrl = baseUrl
         self.session = session
-        self.requestBuilder = requestBuilder
-        self.requestSender = requestSender
+        self.requestController = requestController
     }
 }

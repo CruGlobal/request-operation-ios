@@ -10,21 +10,21 @@ import Foundation
 
 public class RequestBuilder {
     
-    private let requestMutator: RequestMutator?
+    private let requestMutators: [RequestMutator]
     
-    public init(requestMutator: RequestMutator? = nil) {
+    public init(requestMutators: [RequestMutator] = Array()) {
         
-        self.requestMutator = requestMutator
+        self.requestMutators = requestMutators
     }
     
-    public init(requestBuilder: RequestBuilder, requestMutator: RequestMutator?) {
+    public init(requestBuilder: RequestBuilder, requestMutators: [RequestMutator]?) {
         
-        self.requestMutator = requestMutator ?? requestBuilder.requestMutator
+        self.requestMutators = requestMutators ?? requestBuilder.requestMutators
     }
     
-    public func clone(requestMutator: RequestMutator? = nil) -> RequestBuilder {
+    public func clone(requestMutators: [RequestMutator] = Array()) -> RequestBuilder {
         
-        return RequestBuilder(requestBuilder: self, requestMutator: requestMutator)
+        return RequestBuilder(requestBuilder: self, requestMutators: requestMutators)
     }
     
     public func build(parameters: RequestBuilderParameters) -> URLRequest {
@@ -94,7 +94,7 @@ public class RequestBuilder {
             }
         }
         
-        if let requestMutator = self.requestMutator {
+        for requestMutator in requestMutators {
             requestMutator.mutate(request: &urlRequest, parameters: parameters)
         }
     

@@ -12,26 +12,23 @@ import Combine
 open class ApiEndpoint {
     
     public let resourceUrl: ApiResourceUrl
-    public let requestBuilder: RequestBuilder
-    public let requestSender: RequestSender
+    public let requestController: RequestController
     
     public convenience init(resourceUrl: ApiResourceUrl, context: RequestApiSharedContext) {
         
         self.init(
             resourceUrl: resourceUrl,
-            requestBuilder: context.requestBuilder,
-            requestSender: context.requestSender
+            requestController: context.requestController
         )
     }
     
-    public init(resourceUrl: ApiResourceUrl, requestBuilder: RequestBuilder, requestSender: RequestSender) {
+    public init(resourceUrl: ApiResourceUrl, requestController: RequestController) {
         
         self.resourceUrl = resourceUrl
-        self.requestBuilder = requestBuilder
-        self.requestSender = requestSender
+        self.requestController = requestController
     }
     
-    public func buildAndSendRequestPublisher<T: Codable>(resourceUrl: ApiResourceUrl, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
+    public func buildAndSendRequestPublisher<T: Codable>(method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
         
         return buildAndSendRequestPublisher(
             urlString: resourceUrl.absoluteUrl,
@@ -46,20 +43,14 @@ open class ApiEndpoint {
     
     public func buildAndSendRequestPublisher<T: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
         
-        let urlRequest: URLRequest = requestBuilder.build(
-            parameters: RequestBuilderParameters(
-                urlSession: requestSender.session,
-                urlString: urlString,
-                method: method,
-                headers: headers,
-                httpBody: httpBody,
-                queryItems: queryItems,
-                timeoutIntervalForRequest: timeoutIntervalForRequest
-            )
+        return requestController.buildAndSendRequestPublisher(
+            urlString: urlString,
+            method: method,
+            headers: headers,
+            httpBody: httpBody,
+            queryItems: queryItems,
+            timeoutIntervalForRequest: timeoutIntervalForRequest
         )
-        
-        return requestSender
-            .sendAndDecodeDataTaskPublisher(urlRequest: urlRequest)
-            .eraseToAnyPublisher()
+        .eraseToAnyPublisher()
     }
 }
