@@ -11,10 +11,10 @@ import Combine
 
 extension Publisher where Output == RequestDataResponse, Failure == URLError {
     
-    public func decodeRequestDataResponse<T: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
+    public func decodeRequestDataResponse<T: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, Error> {
         
         self.mapError { (urlError: URLError) in
-            return RequestCodableResponseError.urlError(urlError: urlError)
+            return urlError.toError()
         }
         .tryMap { (response: RequestDataResponse) in
             
@@ -36,7 +36,7 @@ extension Publisher where Output == RequestDataResponse, Failure == URLError {
             }
         }
         .mapError { (decodeError: Error) in
-            RequestCodableResponseError.decoderError(decoderError: decodeError)
+            return decodeError
         }
         .eraseToAnyPublisher()
     }
