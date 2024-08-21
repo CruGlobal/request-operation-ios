@@ -11,7 +11,7 @@ import Combine
 
 extension Publisher where Output == RequestDataResponse, Failure == URLError {
     
-    func decodeRequestDataResponse<T: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
+    public func decodeRequestDataResponse<T: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, RequestCodableResponseError> {
         
         self.mapError { (urlError: URLError) in
             return RequestCodableResponseError.urlError(urlError: urlError)
