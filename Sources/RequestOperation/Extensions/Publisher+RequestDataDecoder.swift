@@ -9,14 +9,11 @@
 import Foundation
 import Combine
 
-extension Publisher where Output == RequestDataResponse, Failure == URLError {
+extension Publisher where Output == RequestDataResponse, Failure == Error {
     
     public func decodeRequestDataResponse<T: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, Error> {
         
-        self.mapError { (urlError: URLError) in
-            return urlError.toError()
-        }
-        .tryMap { (response: RequestDataResponse) in
+        self.tryMap { (response: RequestDataResponse) in
             
             guard response.urlResponse.isSuccessHttpStatusCode else {
                 return RequestCodableResponse(codable: nil, requestDataResponse: response)
