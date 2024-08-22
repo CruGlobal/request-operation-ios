@@ -10,7 +10,7 @@ import Foundation
 
 public class RequestBuilder {
     
-    private let requestMutators: [RequestMutator]
+    public let requestMutators: [RequestMutator]
     
     public init(requestMutators: [RequestMutator] = Array()) {
         
@@ -22,9 +22,9 @@ public class RequestBuilder {
         self.requestMutators = requestMutators ?? requestBuilder.requestMutators
     }
     
-    public func clone(requestMutators: [RequestMutator] = Array()) -> RequestBuilder {
+    public func clone(requestMutators: [RequestMutator]? = nil) -> RequestBuilder {
         
-        return RequestBuilder(requestBuilder: self, requestMutators: requestMutators)
+        return RequestBuilder(requestBuilder: self, requestMutators: requestMutators ?? self.requestMutators)
     }
     
     public func build(parameters: RequestBuilderParameters) -> URLRequest {
@@ -99,5 +99,27 @@ public class RequestBuilder {
         }
     
         return .success(urlRequest)
+    }
+}
+
+extension RequestBuilder: Equatable {
+    
+    public static func == (lhs: RequestBuilder, rhs: RequestBuilder) -> Bool {
+        
+        guard lhs.requestMutators.count == rhs.requestMutators.count else {
+            return false
+        }
+            
+        for index in 0 ..< lhs.requestMutators.count {
+            
+            let mutatorA: RequestMutator = lhs.requestMutators[index]
+            let mutatorB: RequestMutator = rhs.requestMutators[index]
+                        
+            if type(of: mutatorA) != type(of: mutatorB) {
+                return false
+            }
+        }
+        
+        return true
     }
 }
