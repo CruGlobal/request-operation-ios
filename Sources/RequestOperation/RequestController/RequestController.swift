@@ -22,7 +22,7 @@ public class RequestController {
         self.requestRetrier = requestRetrier
     }
     
-    public func buildAndSendRequestPublisher<T: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T>, Error> {
+    public func buildAndSendRequestPublisher<T: Codable, U: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T, U>, Error> {
         
         return internalBuildAndSendRequestPublisher(
             urlString: urlString,

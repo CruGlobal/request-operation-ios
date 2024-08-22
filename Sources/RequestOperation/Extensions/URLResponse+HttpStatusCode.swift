@@ -20,6 +20,11 @@ extension URLResponse {
             return false
         }
         
+        return Self.getIsSuccessHttpStatusCode(httpStatusCode: httpStatusCode)
+    }
+    
+    public static func getIsSuccessHttpStatusCode(httpStatusCode: Int) -> Bool {
+        
         return httpStatusCode >= 200 && httpStatusCode < 400
     }
 }
