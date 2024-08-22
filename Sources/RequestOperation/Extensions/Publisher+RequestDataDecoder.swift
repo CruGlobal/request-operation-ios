@@ -11,26 +11,53 @@ import Combine
 
 extension Publisher where Output == RequestDataResponse, Failure == Error {
     
-    public func decodeRequestDataResponse<T: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T>, Error> {
+    public func decodeRequestDataResponse<T: Codable, U: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T, U>, Error> {
         
         self.tryMap { (response: RequestDataResponse) in
             
-            guard response.urlResponse.isSuccessHttpStatusCode else {
-                return RequestCodableResponse(codable: nil, requestDataResponse: response)
+            let successObject: T?
+            let failureObject: U?
+            
+            if response.urlResponse.isSuccessHttpStatusCode {
+                
+                failureObject = nil
+                
+                do {
+                    
+                    let object: T? = try decoder.decode(T.self, from: response.data)
+                    
+                    successObject = object
+                }
+                catch let decodeError {
+                    
+                    successObject = nil
+                    
+                    throw decodeError
+                }
+            }
+            else {
+                
+                successObject = nil
+                
+                do {
+                    
+                    let object: U? = try decoder.decode(U.self, from: response.data)
+                    
+                    failureObject = object
+                }
+                catch let decodeError {
+                    
+                    failureObject = nil
+                    
+                    throw decodeError
+                }
             }
             
-            do {
-                
-                let object: T? = try decoder.decode(T.self, from: response.data)
-                
-                return RequestCodableResponse<T>(
-                    codable: object,
-                    requestDataResponse: response
-                )
-            }
-            catch let decodeError {
-                throw decodeError
-            }
+            return RequestCodableResponse(
+                successObject: successObject,
+                failureObject: failureObject,
+                requestDataResponse: response
+            )
         }
         .mapError { (decodeError: Error) in
             return decodeError

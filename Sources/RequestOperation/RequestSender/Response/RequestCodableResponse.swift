@@ -8,14 +8,20 @@
 
 import Foundation
 
-public struct RequestCodableResponse<T: Codable> {
+public struct RequestCodableResponse<T: Codable, U: Codable> {
     
-    public let codable: T?
+    public let successObject: T?
+    public let failureObject: U?
     public let requestDataResponse: RequestDataResponse
     
-    public init(codable: T?, requestDataResponse: RequestDataResponse) {
+    public init(successObject: T?, failureObject: U?, requestDataResponse: RequestDataResponse) {
     
-        self.codable = codable
+        self.successObject = successObject
+        self.failureObject = failureObject
         self.requestDataResponse = requestDataResponse
+    }
+    
+    public var httpStatusCode: Int? {
+        return requestDataResponse.urlResponse.httpStatusCode
     }
 }
