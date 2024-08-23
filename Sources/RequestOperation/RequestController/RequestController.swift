@@ -22,7 +22,21 @@ public class RequestController {
         self.requestRetrier = requestRetrier
     }
     
-    public func buildAndSendRequestPublisher<T: Codable, U: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil) -> AnyPublisher<RequestCodableResponse<T, U>, Error> {
+    public func buildAndSendRequestPublisher<T: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T, NoResponseCodable>, Error> {
+        
+        return internalBuildAndSendRequestPublisher(
+            urlString: urlString,
+            method: method,
+            headers: headers,
+            httpBody: httpBody,
+            queryItems: queryItems,
+            timeoutIntervalForRequest: timeoutIntervalForRequest
+        )
+        .decodeSuccessRequestDataResponse(decoder: decoder)
+        .eraseToAnyPublisher()
+    }
+    
+    public func buildAndSendRequestPublisher<T: Codable, U: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T, U>, Error> {
         
         return internalBuildAndSendRequestPublisher(
             urlString: urlString,
@@ -32,7 +46,7 @@ public class RequestController {
             queryItems: queryItems,
             timeoutIntervalForRequest: timeoutIntervalForRequest
         )
-        .decodeRequestDataResponse(decoder: JSONDecoder())
+        .decodeSuccessOrFailureRequestDataResponse(decoder: decoder)
         .eraseToAnyPublisher()
     }
     
