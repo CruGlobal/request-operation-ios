@@ -11,12 +11,51 @@ import Combine
 
 extension Publisher where Output == RequestDataResponse, Failure == Error {
     
-    public func decodeRequestDataResponse<T: Codable, U: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<T, U>, Error> {
+    public func decodeRequestDataResponse<SuccessCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, NoResponseCodable>, Error> {
         
         self.tryMap { (response: RequestDataResponse) in
             
-            let successObject: T?
-            let failureObject: U?
+            let successObject: SuccessCodable?
+            let failureObject: NoResponseCodable = NoResponseCodable()
+            
+            if response.urlResponse.isSuccessHttpStatusCode {
+                                
+                do {
+                    
+                    let object: SuccessCodable? = try decoder.decode(SuccessCodable.self, from: response.data)
+                    
+                    successObject = object
+                }
+                catch let decodeError {
+                    
+                    successObject = nil
+                    
+                    throw decodeError
+                }
+            }
+            else {
+                
+                successObject = nil
+            }
+            
+            return RequestCodableResponse(
+                successObject: successObject,
+                failureObject: failureObject,
+                requestDataResponse: response
+            )
+        }
+        .mapError { (decodeError: Error) in
+            return decodeError
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    public func decodeRequestDataResponse<SuccessCodable: Codable, FailureCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
+        
+        self.tryMap { (response: RequestDataResponse) in
+            
+            let successObject: SuccessCodable?
+            let failureObject: FailureCodable?
             
             if response.urlResponse.isSuccessHttpStatusCode {
                 
@@ -24,7 +63,7 @@ extension Publisher where Output == RequestDataResponse, Failure == Error {
                 
                 do {
                     
-                    let object: T? = try decoder.decode(T.self, from: response.data)
+                    let object: SuccessCodable? = try decoder.decode(SuccessCodable.self, from: response.data)
                     
                     successObject = object
                 }
@@ -41,7 +80,7 @@ extension Publisher where Output == RequestDataResponse, Failure == Error {
                 
                 do {
                     
-                    let object: U? = try decoder.decode(U.self, from: response.data)
+                    let object: FailureCodable? = try decoder.decode(FailureCodable.self, from: response.data)
                     
                     failureObject = object
                 }
