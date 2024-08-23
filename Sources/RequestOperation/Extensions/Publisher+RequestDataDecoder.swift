@@ -11,7 +11,7 @@ import Combine
 
 extension Publisher where Output == RequestDataResponse, Failure == Error {
     
-    public func decodeRequestDataResponse<SuccessCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, NoResponseCodable>, Error> {
+    public func decodeSuccessRequestDataResponse<SuccessCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, NoResponseCodable>, Error> {
         
         self.tryMap { (response: RequestDataResponse) in
             
@@ -50,7 +50,7 @@ extension Publisher where Output == RequestDataResponse, Failure == Error {
         .eraseToAnyPublisher()
     }
     
-    public func decodeRequestDataResponse<SuccessCodable: Codable, FailureCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
+    public func decodeSuccessOrFailureRequestDataResponse<SuccessCodable: Codable, FailureCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
         
         self.tryMap { (response: RequestDataResponse) in
             
