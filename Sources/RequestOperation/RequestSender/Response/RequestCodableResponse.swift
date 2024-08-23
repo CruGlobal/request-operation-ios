@@ -8,16 +8,16 @@
 
 import Foundation
 
-public struct RequestCodableResponse<T: Codable, U: Codable> {
+public struct RequestCodableResponse<SuccessCodable: Codable, FailureCodable: Codable> {
     
-    public let successObject: T?
-    public let failureObject: U?
+    public let successCodable: SuccessCodable?
+    public let failureCodable: FailureCodable?
     public let requestDataResponse: RequestDataResponse
     
-    public init(successObject: T?, failureObject: U?, requestDataResponse: RequestDataResponse) {
+    public init(successCodable: SuccessCodable?, failureCodable: FailureCodable?, requestDataResponse: RequestDataResponse) {
     
-        self.successObject = successObject
-        self.failureObject = failureObject
+        self.successCodable = successCodable
+        self.failureCodable = failureCodable
         self.requestDataResponse = requestDataResponse
     }
     
