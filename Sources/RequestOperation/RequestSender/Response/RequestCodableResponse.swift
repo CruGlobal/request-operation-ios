@@ -21,35 +21,53 @@ public struct RequestCodableResponse<SuccessCodable: Codable, FailureCodable: Co
         self.requestDataResponse = requestDataResponse
     }
     
+    public var httpStatusCode: Int? {
+        return requestDataResponse.urlResponse.httpStatusCode
+    }
+    
     public var successCodable: SuccessCodable? {
-        
-        guard let successResult = self.successResult else {
-            return nil
-        }
-        
-        switch successResult {
-        case .success(let successCodable):
-            return successCodable
-        case .failure( _):
-            return nil
-        }
+        return getCodableValue(result: successResult)
+    }
+    
+    public var successCodableDecodeError: Error? {
+        return getDecodeErrorValue(result: successResult)
     }
     
     public var failureCodable: FailureCodable? {
+        return getCodableValue(result: failureResult)
+    }
+    
+    public var failureCodableDecodeError: Error? {
+        return getDecodeErrorValue(result: failureResult)
+    }
+    
+    private func getCodableValue<T: Codable>(result: Result<T, Error>?) -> T? {
         
-        guard let failureResult = self.failureResult else {
+        guard let result = result else {
             return nil
         }
         
-        switch failureResult {
-        case .success(let failureCodable):
-            return failureCodable
+        switch result {
+        case .success(let codable):
+            return codable
+            
         case .failure( _):
             return nil
         }
     }
     
-    public var httpStatusCode: Int? {
-        return requestDataResponse.urlResponse.httpStatusCode
+    private func getDecodeErrorValue<T: Codable>(result: Result<T, Error>?) -> Error? {
+        
+        guard let result = result else {
+            return nil
+        }
+        
+        switch result {
+        case .success( _):
+            return nil
+            
+        case .failure(let decodeError):
+            return decodeError
+        }
     }
 }
