@@ -27,8 +27,8 @@ public class RequestSender {
                     urlResponse: tuple.response
                 )
             }
-            .mapError {
-                return $0.toError()
+            .mapError { (urlError: URLError) in
+                return urlError.toError()
             }
             .eraseToAnyPublisher()
     }
