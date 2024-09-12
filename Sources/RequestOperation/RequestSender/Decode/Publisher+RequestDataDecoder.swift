@@ -9,54 +9,98 @@
 import Foundation
 import Combine
 
-extension Publisher where Output == RequestDataResponse, Failure == URLError {
+extension Publisher where Output == RequestDataResponse, Failure == Error {
     
-    public func decodeRequestDataResponseForSuccessCodable<SuccessCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, NoResponseCodable>, URLError> {
+    public func decodeRequestDataResponseForSuccessCodable<SuccessCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, NoResponseCodable>, Error> {
         
-        self.map { (response: RequestDataResponse) in
+        self.tryMap { (response: RequestDataResponse) in
             
-            let successResult: Result<SuccessCodable, Error>? = response.urlResponse.isSuccessHttpStatusCode ? self.decodeData(data: response.data, decoder: decoder) : nil
+            let successCodable: SuccessCodable?
+            let failureCodable: NoResponseCodable = NoResponseCodable()
             
-            return RequestCodableResponse(
-                successResult: successResult,
-                failureResult: nil,
-                requestDataResponse: response
-            )
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    public func decodeRequestDataResponseForSuccessOrFailureCodable<SuccessCodable: Codable, FailureCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, URLError> {
-        
-        self.map { (response: RequestDataResponse) in
-            
-            let successResult: Result<SuccessCodable, Error>? = response.urlResponse.isSuccessHttpStatusCode ? self.decodeData(data: response.data, decoder: decoder) : nil
-            let failureResult: Result<FailureCodable, Error>? = !response.urlResponse.isSuccessHttpStatusCode ? self.decodeData(data: response.data, decoder: decoder) : nil
-            
-            return RequestCodableResponse(
-                successResult: successResult,
-                failureResult: failureResult,
-                requestDataResponse: response
-            )
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    private func decodeData<T: Codable>(data: Data, decoder: JSONDecoder) -> Result<T, Error>? {
-        
-        do {
-            
-            let object: T? = try decoder.decode(T.self, from: data)
-            
-            guard let object = object else {
-                return nil
+            if response.urlResponse.isSuccessHttpStatusCode {
+                                
+                do {
+                    
+                    let object: SuccessCodable? = try decoder.decode(SuccessCodable.self, from: response.data)
+                    
+                    successCodable = object
+                }
+                catch let decodeError {
+                    
+                    successCodable = nil
+                    
+                    throw decodeError
+                }
+            }
+            else {
+                
+                successCodable = nil
             }
             
-            return .success(object)
+            return RequestCodableResponse(
+                successCodable: successCodable,
+                failureCodable: failureCodable,
+                requestDataResponse: response
+            )
         }
-        catch let decodeError {
+        .mapError { (decodeError: Error) in
+            return decodeError
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    public func decodeRequestDataResponseForSuccessOrFailureCodable<SuccessCodable: Codable, FailureCodable: Codable>(decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
+        
+        self.tryMap { (response: RequestDataResponse) in
             
-            return .failure(decodeError)
+            let successCodable: SuccessCodable?
+            let failureCodable: FailureCodable?
+            
+            if response.urlResponse.isSuccessHttpStatusCode {
+                
+                failureCodable = nil
+                
+                do {
+                    
+                    let object: SuccessCodable? = try decoder.decode(SuccessCodable.self, from: response.data)
+                    
+                    successCodable = object
+                }
+                catch let decodeError {
+                    
+                    successCodable = nil
+                    
+                    throw decodeError
+                }
+            }
+            else {
+                
+                successCodable = nil
+                
+                do {
+                    
+                    let object: FailureCodable? = try decoder.decode(FailureCodable.self, from: response.data)
+                    
+                    failureCodable = object
+                }
+                catch let decodeError {
+                    
+                    failureCodable = nil
+                    
+                    throw decodeError
+                }
+            }
+            
+            return RequestCodableResponse(
+                successCodable: successCodable,
+                failureCodable: failureCodable,
+                requestDataResponse: response
+            )
         }
+        .mapError { (decodeError: Error) in
+            return decodeError
+        }
+        .eraseToAnyPublisher()
     }
 }
