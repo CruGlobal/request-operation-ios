@@ -10,8 +10,20 @@ import Foundation
 
 extension URLError {
     
+    public static var toErrorDomain: String = "URLError"
+    public static var toErrorLocalizedUrlErrorKey: String = "URLError.toErrorLocalizedUrlErrorKey"
+    
     public func toError() -> Error {
         
-        return NSError.createErrorWithDomain(domain: "URLError", code: code.rawValue, description: localizedDescription)
+        let error: Error = NSError(
+            domain: URLError.toErrorDomain,
+            code: code.rawValue,
+            userInfo: [
+                NSLocalizedDescriptionKey: localizedDescription,
+                URLError.toErrorLocalizedUrlErrorKey: self
+            ]
+        )
+
+        return error
     }
 }
