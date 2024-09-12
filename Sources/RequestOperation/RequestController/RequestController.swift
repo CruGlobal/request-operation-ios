@@ -22,7 +22,7 @@ public class RequestController {
         self.requestRetrier = requestRetrier
     }
     
-    public func buildAndSendRequestPublisher<SuccessCodable: Codable, FailureCodable: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
+    public func buildAndSendRequestPublisher<SuccessCodable: Codable, FailureCodable: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, URLError> {
         
         return internalBuildAndSendRequestPublisher(
             urlString: urlString,
@@ -36,7 +36,7 @@ public class RequestController {
         .eraseToAnyPublisher()
     }
     
-    private func internalBuildAndSendRequestPublisher(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
+    private func internalBuildAndSendRequestPublisher(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, URLError> {
         
         let urlRequest: URLRequest = requestBuilder.build(
             parameters: RequestBuilderParameters(
@@ -52,7 +52,7 @@ public class RequestController {
         
         return requestSender
             .sendDataTaskPublisher(urlRequest: urlRequest)
-            .flatMap({ (response: RequestDataResponse) -> AnyPublisher<RequestDataResponse, Error> in
+            .flatMap({ (response: RequestDataResponse) -> AnyPublisher<RequestDataResponse, URLError> in
                 
                 return self.retryRequestIfNeededPublisher(
                     response: response,
@@ -67,11 +67,11 @@ public class RequestController {
             .eraseToAnyPublisher()
     }
     
-    private func retryRequestIfNeededPublisher(response: RequestDataResponse, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
+    private func retryRequestIfNeededPublisher(response: RequestDataResponse, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, URLError> {
         
         guard let requestRetrier = self.requestRetrier else {
             return Just(response)
-                .setFailureType(to: Error.self)
+                .setFailureType(to: URLError.self)
                 .eraseToAnyPublisher()
         }
         
@@ -80,13 +80,13 @@ public class RequestController {
             httpStatusCode: response.urlResponse.httpStatusCode,
             isSuccessHttpStatusCode: response.urlResponse.isSuccessHttpStatusCode
         )
-        .setFailureType(to: Error.self)
-        .flatMap({ [weak self] (retryPolicy: RetryPolicy) -> AnyPublisher<RequestDataResponse, Error> in
+        .setFailureType(to: URLError.self)
+        .flatMap({ [weak self] (retryPolicy: RetryPolicy) -> AnyPublisher<RequestDataResponse, URLError> in
                    
             guard let weakSelf = self else {
                 
                 return Just(response)
-                    .setFailureType(to: Error.self)
+                    .setFailureType(to: URLError.self)
                     .eraseToAnyPublisher()
             }
             
@@ -95,7 +95,7 @@ public class RequestController {
             case .doNotRetry:
                 
                 return Just(response)
-                    .setFailureType(to: Error.self)
+                    .setFailureType(to: URLError.self)
                     .eraseToAnyPublisher()
                 
             case .retry( _):

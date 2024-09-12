@@ -18,7 +18,7 @@ public class RequestSender {
         self.session = session
     }
     
-    public func sendDataTaskPublisher(urlRequest: URLRequest) -> AnyPublisher<RequestDataResponse, Error> {
+    public func sendDataTaskPublisher(urlRequest: URLRequest) -> AnyPublisher<RequestDataResponse, URLError> {
         
         return session.dataTaskPublisher(for: urlRequest)
             .map { (tuple: (data: Data, response: URLResponse)) in
@@ -26,9 +26,6 @@ public class RequestSender {
                     data: tuple.data,
                     urlResponse: tuple.response
                 )
-            }
-            .mapError { (urlError: URLError) in
-                return urlError.toError()
             }
             .eraseToAnyPublisher()
     }
