@@ -52,9 +52,6 @@ public class RequestController {
         
         return requestSender
             .sendDataTaskPublisher(urlRequest: urlRequest)
-            .mapError { (urlError: URLError) in
-                return urlError.toError()
-            }
             .flatMap({ (response: RequestDataResponse) -> AnyPublisher<RequestDataResponse, Error> in
                 
                 return self.retryRequestIfNeededPublisher(
