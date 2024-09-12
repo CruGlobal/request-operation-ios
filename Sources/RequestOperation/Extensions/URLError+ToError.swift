@@ -27,3 +27,18 @@ extension URLError {
         return error
     }
 }
+
+extension Error {
+    
+    public var isUrlError: Bool {
+        
+        return (self as NSError).domain == URLError.toErrorDomain
+    }
+    
+    public func getUrlError() -> URLError? {
+        
+        let userInfo: [String: Any] = (self as NSError).userInfo
+        
+        return userInfo[URLError.toErrorLocalizedUrlErrorKey] as? URLError
+    }
+}
