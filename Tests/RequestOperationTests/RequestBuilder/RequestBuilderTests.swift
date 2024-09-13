@@ -33,6 +33,22 @@ class RequestBuilderTests: XCTestCase {
         XCTAssertTrue(requestBuilderWithMutators == requestBuilderWithMutators.clone())
     }
     
+    func testRequestBuilderMutatorsAreEqual() {
+        
+        let requestBuilderA = RequestBuilder(requestMutators: [TestRequestMutatorA()])
+        let requestBuilderB = RequestBuilder(requestMutators: [TestRequestMutatorA()])
+        
+        XCTAssertTrue(requestBuilderA == requestBuilderB)
+    }
+    
+    func testRequestBuilderMutatorsAreNotEqual() {
+        
+        let requestBuilderA = RequestBuilder(requestMutators: [TestRequestMutatorA()])
+        let requestBuilderB = RequestBuilder(requestMutators: [TestRequestMutatorB()])
+        
+        XCTAssertTrue(requestBuilderA != requestBuilderB)
+    }
+    
     func testBuildUrlRequest() {
         
         let requestBuilder = RequestBuilder()
