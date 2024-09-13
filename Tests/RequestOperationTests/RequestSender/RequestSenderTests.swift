@@ -22,7 +22,7 @@ class RequestSenderTests: XCTestCase {
         
         let requestBuilder = RequestBuilder()
         
-        let urlString: String = "https://mobile-content-api-stage.cru.org/languages/" + languageId
+        let urlString: String = Self.languagesUrl + "/" + languageId
         let requestMethod: RequestMethod = .get
         let contentType: String = "application/vnd.api+json"
         
