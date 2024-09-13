@@ -158,7 +158,7 @@ class RequestSenderTests: XCTestCase {
         XCTAssertTrue((errorRef as? NSError)?.domain == URLError.toErrorDomain)
     }
     
-    func testDecodeRequestDataResponseForSuccessCodable() {
+    func testSuccessfullyDecodeSuccessCodableWhenRequestIsSuccessful() {
         
         let timeoutSeconds: TimeInterval = 15
         
@@ -193,7 +193,41 @@ class RequestSenderTests: XCTestCase {
         XCTAssertTrue(responseRef?.successCodable?.dataObject.id == languageId)
     }
     
-    func testDecodeRequestDataResponseForSuccessOrFailureCodable() {
+    func testSuccessCodableIsNilWhenRequestIsUnSuccessful() {
+        
+        let timeoutSeconds: TimeInterval = 15
+        
+        let languageId: String = Self.invalidLanguageId
+        
+        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+
+        let requestSender = RequestSender(session: session)
+        
+        let expectation = expectation(description: "")
+        
+        var responseRef: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, NoResponseCodable>?
+        
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+            .decodeRequestDataResponseForSuccessCodable()
+            .sink { completion in
+                
+                expectation.fulfill()
+                
+            } receiveValue: { (response: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, NoResponseCodable>) in
+                
+                responseRef = response
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: timeoutSeconds)
+        
+        XCTAssertNotNil(responseRef)
+        XCTAssertNil(responseRef?.successCodable)
+    }
+    
+    func testSuccessfullyDecodeFailureCodableWhenRequestIsUnSuccessful() {
         
         let timeoutSeconds: TimeInterval = 15
         
@@ -225,5 +259,93 @@ class RequestSenderTests: XCTestCase {
         
         XCTAssertNotNil(responseRef)
         XCTAssertNotNil(responseRef?.failureCodable)
+    }
+    
+    func testReceiveDecodeErrorForSuccessCodableWhenRequestIsSuccessful() {
+        
+        let timeoutSeconds: TimeInterval = 15
+        
+        let languageId: String = Self.englishLanguageId
+        
+        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+
+        let requestSender = RequestSender(session: session)
+        
+        let expectation = expectation(description: "")
+        
+        var decodeErrorRef: Error?
+        var responseRef: RequestCodableResponse<JsonApiResponseDataObject<InvalidLanguageCodable>, NoResponseCodable>?
+        
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+            .decodeRequestDataResponseForSuccessCodable()
+            .sink { completion in
+                
+                switch completion {
+                case .finished:
+                    break
+                    
+                case .failure(let error):
+                    decodeErrorRef = error
+                }
+                
+                expectation.fulfill()
+                
+            } receiveValue: { (response: RequestCodableResponse<JsonApiResponseDataObject<InvalidLanguageCodable>, NoResponseCodable>) in
+                
+                responseRef = response
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: timeoutSeconds)
+        
+        XCTAssertNil(responseRef)
+        XCTAssertNil(responseRef?.successCodable)
+        XCTAssertNotNil(decodeErrorRef)
+    }
+    
+    func testReceiveDecodeErrorForFailureCodableWhenRequestIsUnSuccessful() {
+        
+        let timeoutSeconds: TimeInterval = 15
+        
+        let languageId: String = Self.invalidLanguageId
+        
+        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+
+        let requestSender = RequestSender(session: session)
+        
+        let expectation = expectation(description: "")
+        
+        var decodeErrorRef: Error?
+        var responseRef: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, MobileContentApiErrorCodable>?
+        
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+            .decodeRequestDataResponseForSuccessOrFailureCodable()
+            .sink { completion in
+                
+                switch completion {
+                case .finished:
+                    break
+                    
+                case .failure(let error):
+                    decodeErrorRef = error
+                }
+                
+                expectation.fulfill()
+                
+            } receiveValue: { (response: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, MobileContentApiErrorCodable>) in
+                
+                responseRef = response
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: timeoutSeconds)
+        
+        XCTAssertNil(responseRef)
+        XCTAssertNil(responseRef?.failureCodable)
+        XCTAssertNotNil(decodeErrorRef)
     }
 }
