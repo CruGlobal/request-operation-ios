@@ -10,9 +10,9 @@ import Foundation
 
 public struct JsonApiResponseDataObject<T: Codable>: Codable {
     
-    public let data: T
+    public let dataObject: T
     
     public enum CodingKeys: String, CodingKey {
-        case data = "data"
+        case dataObject = "data"
     }
 }
