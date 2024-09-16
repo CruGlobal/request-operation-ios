@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-public class RequestController {
+open class RequestController {
     
     public let requestBuilder: RequestBuilder
     public let requestSender: RequestSender

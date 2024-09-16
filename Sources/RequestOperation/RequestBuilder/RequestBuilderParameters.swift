@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class RequestBuilderParameters {
+open class RequestBuilderParameters {
     
     public let requestCachePolicy: NSURLRequest.CachePolicy
     public let timeoutIntervalForRequest: TimeInterval

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class RequestBuilder {
+open class RequestBuilder {
     
     public let requestMutators: [RequestMutator]
     
