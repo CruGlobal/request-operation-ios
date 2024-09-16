@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct RequestCodableResponse<SuccessCodable: Codable, FailureCodable: Codable> {
+open class RequestCodableResponse<SuccessCodable: Codable, FailureCodable: Codable> {
     
     public let successCodable: SuccessCodable?
     public let failureCodable: FailureCodable?

@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-public class RequestSender {
+open class RequestSender {
         
     public let session: URLSession
     

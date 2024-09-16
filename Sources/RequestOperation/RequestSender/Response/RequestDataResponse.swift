@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct RequestDataResponse {
+open class RequestDataResponse {
     
     public let data: Data
     public let urlResponse: URLResponse
