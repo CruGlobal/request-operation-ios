@@ -10,6 +10,8 @@ import Foundation
 
 extension URLResponse {
     
+    public static let httpStatusCodeSuccessRange: Range<Int> = 200 ..< 400
+    
     public var httpStatusCode: Int? {
         return (self as? HTTPURLResponse)?.statusCode
     }
@@ -25,6 +27,6 @@ extension URLResponse {
     
     public static func getIsSuccessHttpStatusCode(httpStatusCode: Int) -> Bool {
         
-        return httpStatusCode >= 200 && httpStatusCode < 400
+        return URLResponse.httpStatusCodeSuccessRange.contains(httpStatusCode)
     }
 }
