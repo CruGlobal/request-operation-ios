@@ -22,12 +22,12 @@ open class RequestBuilder {
         self.requestMutators = requestMutators ?? requestBuilder.requestMutators
     }
     
-    public func clone(requestMutators: [RequestMutator]? = nil) -> RequestBuilder {
+    open func clone(requestMutators: [RequestMutator]? = nil) -> RequestBuilder {
         
         return RequestBuilder(requestBuilder: self, requestMutators: requestMutators ?? self.requestMutators)
     }
     
-    public func build(parameters: RequestBuilderParameters) -> URLRequest {
+    open func build(parameters: RequestBuilderParameters) -> URLRequest {
         
         let url: URL?
         
@@ -67,7 +67,7 @@ open class RequestBuilder {
         }
     }
     
-    public func build(url: URL, parameters: RequestBuilderParameters) -> Result<URLRequest, Error> {
+    open func build(url: URL, parameters: RequestBuilderParameters) -> Result<URLRequest, Error> {
                 
         var urlRequest = URLRequest(
             url: url,
