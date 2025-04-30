@@ -18,11 +18,13 @@ class LanguageResource: ApiResource {
         let resourceUrl = ApiResourceUrl(baseUrl: context.baseUrl, path: "languages")
         
         getLanguageEndpoint = GetLanguageEndpoint(
+            urlSession: context.urlSession,
             resourceUrl: resourceUrl,
             context: context
         )
         
         getLanguagesEndpoint = GetLanguagesEndpoint(
+            urlSession: context.urlSession,
             resourceUrl: resourceUrl,
             context: context
         )

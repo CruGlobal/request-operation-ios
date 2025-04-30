@@ -11,13 +11,13 @@ import Foundation
 open class RequestApiSharedContext {
     
     public let baseUrl: ApiBaseUrl
-    public let session: URLSession
+    public let urlSession: URLSession
     public let requestController: RequestController
     
-    public init(baseUrl: ApiBaseUrl, session: URLSession, requestController: RequestController) {
+    public init(baseUrl: ApiBaseUrl, urlSession: URLSession, requestController: RequestController) {
        
         self.baseUrl = baseUrl
-        self.session = session
+        self.urlSession = urlSession
         self.requestController = requestController
     }
 }
