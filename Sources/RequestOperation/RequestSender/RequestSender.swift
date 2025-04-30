@@ -18,7 +18,9 @@ open class RequestSender {
         self.session = session
     }
     
-    open func sendDataTaskPublisher(urlRequest: URLRequest) -> AnyPublisher<RequestDataResponse, Error> {
+    open func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession? = nil) -> AnyPublisher<RequestDataResponse, Error> {
+        
+        let session: URLSession = urlSession ?? self.session
         
         return session.dataTaskPublisher(for: urlRequest)
             .map { (tuple: (data: Data, response: URLResponse)) in
