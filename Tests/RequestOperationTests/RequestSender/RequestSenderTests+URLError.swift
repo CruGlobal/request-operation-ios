@@ -16,7 +16,7 @@ extension RequestSenderTests {
         
         let timeoutSeconds: TimeInterval = 15
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
         let requestBuilder = RequestBuilder()
         
@@ -27,7 +27,7 @@ extension RequestSenderTests {
         
         let urlRequest: URLRequest = requestBuilder.build(
             parameters: RequestBuilderParameters(
-                urlSession: session,
+                urlSession: urlSession,
                 urlString: urlString,
                 method: requestMethod,
                 headers: ["Content-Type": contentType],
@@ -36,13 +36,13 @@ extension RequestSenderTests {
             )
         )
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var errorRef: Error?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .sink { completion in
                 
                 switch completion {
