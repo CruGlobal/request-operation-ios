@@ -22,9 +22,10 @@ open class RequestController {
         self.requestRetrier = requestRetrier
     }
     
-    open func buildAndSendRequestPublisher<SuccessCodable: Codable, FailureCodable: Codable>(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
+    open func buildAndSendRequestPublisher<SuccessCodable: Codable, FailureCodable: Codable>(urlSession: URLSession, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
         
         return internalBuildAndSendRequestPublisher(
+            urlSession: urlSession,
             urlString: urlString,
             method: method,
             headers: headers,
@@ -36,11 +37,11 @@ open class RequestController {
         .eraseToAnyPublisher()
     }
     
-    private func internalBuildAndSendRequestPublisher(urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
+    private func internalBuildAndSendRequestPublisher(urlSession: URLSession, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
         
         let urlRequest: URLRequest = requestBuilder.build(
             parameters: RequestBuilderParameters(
-                urlSession: requestSender.session,
+                urlSession: urlSession,
                 urlString: urlString,
                 method: method,
                 headers: headers,
@@ -51,11 +52,12 @@ open class RequestController {
         )
         
         return requestSender
-            .sendDataTaskPublisher(urlRequest: urlRequest)
+            .sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .flatMap({ (response: RequestDataResponse) -> AnyPublisher<RequestDataResponse, Error> in
                 
                 return self.retryRequestIfNeededPublisher(
                     response: response,
+                    urlSession: urlSession,
                     urlString: urlString,
                     method: method,
                     headers: headers,
@@ -67,7 +69,7 @@ open class RequestController {
             .eraseToAnyPublisher()
     }
     
-    private func retryRequestIfNeededPublisher(response: RequestDataResponse, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
+    private func retryRequestIfNeededPublisher(response: RequestDataResponse, urlSession: URLSession, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
         
         guard let requestRetrier = self.requestRetrier else {
             return Just(response)
@@ -101,6 +103,7 @@ open class RequestController {
             case .retry( _):
                 
                 return weakSelf.internalBuildAndSendRequestPublisher(
+                    urlSession: urlSession,
                     urlString: urlString,
                     method: method,
                     headers: headers,
