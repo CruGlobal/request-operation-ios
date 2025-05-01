@@ -18,17 +18,17 @@ extension RequestSenderTests {
         
         let languageId: String = Self.englishLanguageId
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var responseRef: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, NoResponseCodable>?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .decodeRequestDataResponseForSuccessCodable()
             .sink { completion in
                 
@@ -53,17 +53,17 @@ extension RequestSenderTests {
         
         let languageId: String = Self.invalidLanguageId
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var responseRef: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, NoResponseCodable>?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .decodeRequestDataResponseForSuccessCodable()
             .sink { completion in
                 
@@ -87,17 +87,17 @@ extension RequestSenderTests {
         
         let languageId: String = Self.invalidLanguageId
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var responseRef: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, MobileContentApiErrorsCodable>?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .decodeRequestDataResponseForSuccessOrFailureCodable()
             .sink { completion in
                 
@@ -121,18 +121,18 @@ extension RequestSenderTests {
         
         let languageId: String = Self.englishLanguageId
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var decodeErrorRef: Error?
         var responseRef: RequestCodableResponse<JsonApiResponseDataObject<InvalidLanguageCodable>, NoResponseCodable>?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .decodeRequestDataResponseForSuccessCodable()
             .sink { completion in
                 
@@ -165,18 +165,18 @@ extension RequestSenderTests {
         
         let languageId: String = Self.invalidLanguageId
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var decodeErrorRef: Error?
         var responseRef: RequestCodableResponse<JsonApiResponseDataObject<LanguageModel>, MobileContentApiErrorCodable>?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .decodeRequestDataResponseForSuccessOrFailureCodable()
             .sink { completion in
                 

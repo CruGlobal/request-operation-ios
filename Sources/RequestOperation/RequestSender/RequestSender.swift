@@ -10,19 +10,14 @@ import Foundation
 import Combine
 
 open class RequestSender {
+            
+    public init() {
         
-    public let session: URLSession
-    
-    public init(session: URLSession) {
-        
-        self.session = session
     }
     
-    open func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession? = nil) -> AnyPublisher<RequestDataResponse, Error> {
-        
-        let session: URLSession = urlSession ?? self.session
-        
-        return session.dataTaskPublisher(for: urlRequest)
+    open func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession) -> AnyPublisher<RequestDataResponse, Error> {
+                
+        return urlSession.dataTaskPublisher(for: urlRequest)
             .map { (tuple: (data: Data, response: URLResponse)) in
                 RequestDataResponse(
                     data: tuple.data,

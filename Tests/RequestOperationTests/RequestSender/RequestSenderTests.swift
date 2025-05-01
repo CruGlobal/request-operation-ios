@@ -18,7 +18,7 @@ class RequestSenderTests: XCTestCase {
     
     var cancellables: Set<AnyCancellable> = Set()
     
-    func buildGetLanguageUrlRequest(session: URLSession, languageId: String) -> URLRequest {
+    func buildGetLanguageUrlRequest(urlSession: URLSession, languageId: String) -> URLRequest {
         
         let requestBuilder = RequestBuilder()
         
@@ -28,7 +28,7 @@ class RequestSenderTests: XCTestCase {
         
         let urlRequest: URLRequest = requestBuilder.build(
             parameters: RequestBuilderParameters(
-                urlSession: session,
+                urlSession: urlSession,
                 urlString: urlString,
                 method: requestMethod,
                 headers: ["Content-Type": contentType],
@@ -44,17 +44,17 @@ class RequestSenderTests: XCTestCase {
         
         let timeoutSeconds: TimeInterval = 15
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
                 
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: Self.englishLanguageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.englishLanguageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var responseRef: RequestDataResponse?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .sink { completion in
                 
                 expectation.fulfill()
@@ -75,17 +75,17 @@ class RequestSenderTests: XCTestCase {
         
         let timeoutSeconds: TimeInterval = 15
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: Self.invalidLanguageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.invalidLanguageId)
         
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
         var responseRef: RequestDataResponse?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .sink { completion in
                 
                 expectation.fulfill()

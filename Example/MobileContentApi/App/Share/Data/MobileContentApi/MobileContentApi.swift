@@ -16,17 +16,17 @@ class MobileContentApi: RequestApi {
         
         let baseUrl: ApiBaseUrl = environment.baseUrl
         
-        let session: URLSession = RequestUrlSession.sharedIgnoreCacheSession
+        let urlSession: URLSession = RequestUrlSession.sharedIgnoreCacheSession
         
         let requestController = RequestController(
             requestBuilder: RequestBuilder(),
-            requestSender: RequestSender(session: session),
+            requestSender: RequestSender(),
             requestRetrier: nil
         )
         
         let context = RequestApiSharedContext(
             baseUrl: baseUrl,
-            session: session,
+            urlSession: urlSession,
             requestController: requestController
         )
         

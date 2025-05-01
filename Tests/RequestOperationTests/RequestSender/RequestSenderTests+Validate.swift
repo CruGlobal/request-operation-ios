@@ -18,11 +18,11 @@ extension RequestSenderTests {
         
         let languageId: String = Self.invalidLanguageId
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
@@ -30,7 +30,7 @@ extension RequestSenderTests {
         
         var errorRef: Error?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .validate(successRange: httpStatusCodeSuccessRange)
             .sink { completion in
                 
@@ -67,11 +67,11 @@ extension RequestSenderTests {
         
         let languageId: String = Self.englishLanguageId
         
-        let session: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
+        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(session: session, languageId: languageId)
+        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
-        let requestSender = RequestSender(session: session)
+        let requestSender = RequestSender()
         
         let expectation = expectation(description: "")
         
@@ -79,7 +79,7 @@ extension RequestSenderTests {
         
         var responseRef: RequestDataResponse?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest)
+        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
             .validate(successRange: httpStatusCodeSuccessRange)
             .sink { completion in
                 
