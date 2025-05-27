@@ -15,11 +15,7 @@ extension Publisher where Output == RequestDataResponse, Failure == Error {
         
         self.tryMap { (response: RequestDataResponse) in
             
-            guard let httpStatusCode = response.urlResponse.httpStatusCode, URLResponse.getIsSuccessHttpStatusCode(httpStatusCode: httpStatusCode) else {
-                throw response.toError()
-            }
-            
-            return response
+            return try response.validate()
         }
         .eraseToAnyPublisher()
     }

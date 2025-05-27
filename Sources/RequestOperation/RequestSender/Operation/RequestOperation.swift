@@ -10,7 +10,7 @@ import Foundation
 
 open class RequestOperation: Operation {
     
-    public typealias Completion = ((_ response: RequestResponse) -> Void)
+    public typealias Completion = ((_ response: RequestOperationResponse) -> Void)
     
     enum ObserverKey: String {
         case isExecuting = "isExecuting"
@@ -71,10 +71,18 @@ open class RequestOperation: Operation {
         
         state = .finished
         
-        let response = RequestResponse(
+        let requestDataResponse: RequestDataResponse?
+        
+        if let data = data, let urlResponse = urlResponse {
+            requestDataResponse = RequestDataResponse(data: data, urlResponse: urlResponse)
+        }
+        else {
+            requestDataResponse = nil
+        }
+        
+        let response = RequestOperationResponse(
             urlRequest: urlRequest,
-            data: data,
-            urlResponse: urlResponse,
+            requestDataResponse: requestDataResponse,
             requestError: requestError
         )
         
