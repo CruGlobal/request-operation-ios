@@ -18,7 +18,7 @@ class RequestSenderTests: XCTestCase {
     
     var cancellables: Set<AnyCancellable> = Set()
     
-    func buildGetLanguageUrlRequest(urlSession: URLSession, languageId: String) -> URLRequest {
+    static func buildGetLanguageUrlRequest(urlSession: URLSession, languageId: String) -> URLRequest {
         
         let requestBuilder = RequestBuilder()
         
@@ -46,7 +46,7 @@ class RequestSenderTests: XCTestCase {
         
         let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
                 
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.englishLanguageId)
+        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.englishLanguageId)
 
         let requestSender = RequestSender()
         
@@ -77,7 +77,7 @@ class RequestSenderTests: XCTestCase {
         
         let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.invalidLanguageId)
+        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.invalidLanguageId)
         
         let requestSender = RequestSender()
         
