@@ -5,8 +5,44 @@ RequestOperation
 
 A swift package to facilitate in creation of URLRequests (RequestBuilder) and provides an Operation (RequestOperation) for submitting requests from an OperationQueue.  Completed RequestOperations will provide a RequestResponse object with some details about the completed request. 
 
+- [Basic Usage](#basic-usage)
+- [Advanced Usage](#advanced-usage)
 - [Publishing New Versions With GitHub Actions](#publishing-new-versions-with-github-actions)
 - [Publishing New Versions Manually](#publishing-new-versions-manually)
+
+### Basic Usage
+
+- Use RequestBuilder to build URLRequests
+
+```swift
+let urlRequest: URLRequest = RequestBuilder().build(
+    parameters: RequestBuilderParameters(
+        urlSession: urlSession,
+        urlString: "url-here",
+        method: .get,
+        headers: nil,
+        httpBody: nil,
+        queryItems: nil
+    )
+)
+```
+
+- Use RequestSender to send URLRequests
+
+```swift
+let requestSender = RequestSender()
+
+return requestSender.sendDataTaskPublisher(
+     urlRequest: urlRequest,
+     urlSession: urlSession
+)
+.map { (response: RequestDataResponse) in
+    // Do something with response...
+}
+.eraseToAnyPublisher()
+```
+
+### Advanced Usage
 
 ### Publishing New Versions With GitHub Actions
 
