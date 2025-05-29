@@ -20,7 +20,7 @@ extension RequestSenderTests {
         
         let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
+        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
         let requestSender = RequestSender()
         
@@ -69,7 +69,7 @@ extension RequestSenderTests {
         
         let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
         
-        let urlRequest: URLRequest = buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
+        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
 
         let requestSender = RequestSender()
         
