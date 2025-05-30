@@ -1,19 +1,18 @@
 //
-//  RequestOperationTests.swift
-//  request-operation-ios
+//  CreateIgnoreCacheSessionConfigTests.swift
+//  RequestOperation
 //
-//  Created by Levi Eggert on 8/16/2024.
-//  Copyright © 2024 Cru. All rights reserved.
+//  Created by Levi Eggert on 5/30/25.
 //
 
 import XCTest
 @testable import RequestOperation
 
-class RequestUrlSessionTests: XCTestCase {
+class CreateIgnoreCacheSessionConfigTests: XCTestCase {
     
     func testCreateIgnoreCacheSessionIgnoresTheCache() {
         
-        let ignoreCacheSesion: URLSession = RequestUrlSession.createIgnoreCacheSession()
+        let ignoreCacheSesion: URLSession = URLSession(configuration: CreateIgnoreCacheSessionConfig().createConfig())
         
         XCTAssertTrue(ignoreCacheSesion.configuration.requestCachePolicy == .reloadIgnoringLocalCacheData, "requestCachePolicy should equal reloadIgnoringLocalCacheData")
         XCTAssertNil(ignoreCacheSesion.configuration.urlCache, "urlCache should be nil")
@@ -26,7 +25,9 @@ class RequestUrlSessionTests: XCTestCase {
         
         let timeoutInterval: TimeInterval = 12
         
-        let ignoreCacheSesion: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutInterval)
+        let ignoreCacheSesion: URLSession = URLSession(
+            configuration: CreateIgnoreCacheSessionConfig().createConfig(timeoutIntervalForRequest: timeoutInterval)
+        )
         
         XCTAssertTrue(ignoreCacheSesion.configuration.timeoutIntervalForRequest == timeoutInterval)
     }
