@@ -41,7 +41,7 @@ jobs:
           elif [ ${{ inputs.versionIncrementType }} == 'major' ]; then
             echo "value=true" >> "$GITHUB_OUTPUT"
           else
-            echo echo "value=false" >> "$GITHUB_OUTPUT"
+            echo "value=false" >> "$GITHUB_OUTPUT"
           fi
   
   current_version:
