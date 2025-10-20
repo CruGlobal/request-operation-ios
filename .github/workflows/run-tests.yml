@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   run_tests_and_code_coverage:
-    uses: CruGlobal/godtools-swift/.github/workflows/shared-spm-run-tests.yml@main
+    uses: CruGlobal/godtools-swift/.github/workflows/shared-spm-run-tests.yml@master
     with:
       xcodebuild-test-scheme: RequestOperation
     secrets:
