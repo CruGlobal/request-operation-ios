@@ -37,7 +37,7 @@ extension JsonApiFilter {
         return URLQueryItem(name: queryName, value: queryValue)
     }
     
-    public func buildQueryItems(nameValues: [Name: [Value?]]) -> [URLQueryItem]? {
+    public static func buildQueryItems(nameValues: [Name: [Value?]]) -> [URLQueryItem]? {
         
         var queryItems: [URLQueryItem] = Array()
         
