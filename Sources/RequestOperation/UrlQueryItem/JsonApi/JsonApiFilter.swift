@@ -33,4 +33,25 @@ extension JsonApiFilter {
     public func toUrlQueryItem() -> URLQueryItem {
         return URLQueryItem(name: queryName, value: queryValue)
     }
+    
+    public func buildQueryItems(nameValues: [String: [String?]]) -> [URLQueryItem]? {
+        
+        var queryItems: [URLQueryItem] = Array()
+        
+        for (name, values) in nameValues {
+            
+            queryItems.append(
+                JsonApiFilter(
+                    name: name,
+                    values: values.compactMap { $0 }
+                ).toUrlQueryItem()
+            )
+        }
+        
+        guard queryItems.count > 0 else {
+            return nil
+        }
+        
+        return queryItems
+    }
 }
