@@ -10,10 +10,13 @@ import Foundation
 
 public struct JsonApiFilter {
     
-    public let name: String
-    public let values: [String]
+    public typealias Name = String
+    public typealias Value = String
     
-    public init(name: String, values: [String]) {
+    public let name: Name
+    public let values: [Value]
+    
+    public init(name: Name, values: [Value]) {
         
         self.name = name
         self.values = values
@@ -34,7 +37,7 @@ extension JsonApiFilter {
         return URLQueryItem(name: queryName, value: queryValue)
     }
     
-    public func buildQueryItems(nameValues: [String: [String?]]) -> [URLQueryItem]? {
+    public func buildQueryItems(nameValues: [Name: [Value?]]) -> [URLQueryItem]? {
         
         var queryItems: [URLQueryItem] = Array()
         
