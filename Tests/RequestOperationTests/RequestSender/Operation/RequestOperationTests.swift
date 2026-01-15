@@ -1,8 +1,9 @@
 //
 //  RequestOperationTests.swift
-//  RequestOperation
+//  request-operation-ios
 //
-//  Created by Levi Eggert on 5/27/25.
+//  Created by Levi Eggert on 5/27/2025.
+//  Copyright © 2025 Cru. All rights reserved.
 //
 
 import XCTest

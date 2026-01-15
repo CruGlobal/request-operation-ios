@@ -10,8 +10,8 @@ import Foundation
 
 extension RequestDataResponse {
     
-    public static var toErrorDomain: String = "RequestDataResponse"
-    public static var toErrorLocalizedRequestDataResponseKey: String = "RequestDataResponse.toErrorLocalizedRequestDataResponseKey"
+    public static let toErrorDomain: String = "RequestDataResponse"
+    public static let toErrorLocalizedRequestDataResponseKey: String = "RequestDataResponse.toErrorLocalizedRequestDataResponseKey"
     
     public func toError() -> Error {
         

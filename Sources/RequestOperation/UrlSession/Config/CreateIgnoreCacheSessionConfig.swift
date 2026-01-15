@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class CreateIgnoreCacheSessionConfig: CreateUrlSessionConfigInterface {
+public final class CreateIgnoreCacheSessionConfig: CreateUrlSessionConfigInterface {
     
     public init() {
         

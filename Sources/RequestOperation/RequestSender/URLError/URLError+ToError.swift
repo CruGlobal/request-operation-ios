@@ -10,8 +10,8 @@ import Foundation
 
 extension URLError {
     
-    public static var toErrorDomain: String = "URLError"
-    public static var toErrorLocalizedUrlErrorKey: String = "URLError.toErrorLocalizedUrlErrorKey"
+    public static let toErrorDomain: String = "URLError"
+    public static let toErrorLocalizedUrlErrorKey: String = "URLError.toErrorLocalizedUrlErrorKey"
     
     public func toError() -> Error {
         
