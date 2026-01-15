@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class URLSessionPriority {
+public final class URLSessionPriority {
     
     private let lowPriorityQueue: URLSessionQueue
     private let mediumPriorityQueue: URLSessionQueue
@@ -19,10 +19,12 @@ public class URLSessionPriority {
             qualityOfService: .background,
             sessionDescription: "Low Priority Queue"
         )
+        
         mediumPriorityQueue = URLSessionQueue(
             qualityOfService: .utility,
             sessionDescription: "Medium Priority Queue"
         )
+        
         highPriorityQueue = URLSessionQueue(
             qualityOfService: .userInitiated,
             sessionDescription: "High Priority Queue"

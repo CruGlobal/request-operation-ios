@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum RequestPriority {
+public enum RequestPriority: Sendable {
     case low
     case medium
     case high

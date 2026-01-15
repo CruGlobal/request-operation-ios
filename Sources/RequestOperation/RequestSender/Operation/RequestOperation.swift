@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class RequestOperation: Operation {
+open class RequestOperation: Operation, @unchecked Sendable {
     
     public typealias Completion = ((_ response: RequestOperationResponse) -> Void)
     

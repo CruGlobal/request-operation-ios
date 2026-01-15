@@ -9,13 +9,13 @@
 import Foundation
 import Combine
 
-open class RequestSender {
+public final class RequestSender {
             
     public init() {
         
     }
     
-    open func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession) -> AnyPublisher<RequestDataResponse, Error> {
+    public func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession) -> AnyPublisher<RequestDataResponse, Error> {
                 
         return urlSession.dataTaskPublisher(for: urlRequest)
             .map { (tuple: (data: Data, response: URLResponse)) in

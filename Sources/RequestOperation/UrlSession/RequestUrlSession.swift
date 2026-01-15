@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class RequestUrlSession {
+public final class RequestUrlSession {
     
     public static let sharedIgnoreCacheSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: 60)
     
