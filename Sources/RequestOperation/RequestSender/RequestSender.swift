@@ -15,7 +15,7 @@ open class RequestSender {
         
     }
     
-    public func sendDataTask(urlRequest: URLRequest, urlSession: URLSession) async throws -> RequestDataResponse {
+    open func sendDataTask(urlRequest: URLRequest, urlSession: URLSession) async throws -> RequestDataResponse {
         
         let tuple: (data: Data, response: URLResponse) = try await urlSession.data(for: urlRequest)
         
@@ -27,7 +27,7 @@ open class RequestSender {
         return response
     }
     
-    public func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession) -> AnyPublisher<RequestDataResponse, Error> {
+    open func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession) -> AnyPublisher<RequestDataResponse, Error> {
                 
         return urlSession.dataTaskPublisher(for: urlRequest)
             .map { (tuple: (data: Data, response: URLResponse)) in
