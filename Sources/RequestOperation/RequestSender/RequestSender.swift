@@ -15,6 +15,18 @@ public final class RequestSender {
         
     }
     
+    public func sendDataTask(urlRequest: URLRequest, urlSession: URLSession) async throws -> RequestDataResponse {
+        
+        let tuple: (data: Data, response: URLResponse) = try await urlSession.data(for: urlRequest)
+        
+        let response = RequestDataResponse(
+            data: tuple.data,
+            urlResponse: tuple.response
+        )
+        
+        return response
+    }
+    
     public func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession) -> AnyPublisher<RequestDataResponse, Error> {
                 
         return urlSession.dataTaskPublisher(for: urlRequest)
