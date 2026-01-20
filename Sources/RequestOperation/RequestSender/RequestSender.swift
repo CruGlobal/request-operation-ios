@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-public final class RequestSender {
+open class RequestSender {
             
     public init() {
         
