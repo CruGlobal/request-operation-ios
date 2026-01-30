@@ -9,7 +9,7 @@ import Foundation
 
 extension RequestDataResponse {
     
-    func validate() throws -> RequestDataResponse {
+    public func validate() throws -> RequestDataResponse {
         
         guard let httpStatusCode = urlResponse.httpStatusCode, URLResponse.getIsSuccessHttpStatusCode(httpStatusCode: httpStatusCode) else {
             throw toError()
