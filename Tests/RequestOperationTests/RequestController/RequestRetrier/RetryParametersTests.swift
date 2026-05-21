@@ -6,24 +6,27 @@
 //  Copyright © 2024 Cru. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import RequestOperation
+import Foundation
 
-class RetryParametersTests: XCTestCase {
+struct RetryParametersTests {
     
-    func testDefaultParametersAreSet() {
+    @Test
+    func defaultParametersAreSet() {
         
         let retryParameters = RetryParameters()
         
-        XCTAssertNil(retryParameters.delaySeconds)
+        #expect(retryParameters.delaySeconds == nil)
     }
     
-    func testDelaySecondsParameterIsSet() {
+    @Test
+    func delaySecondsParameterIsSet() {
         
         let delaySeconds: TimeInterval = 5
         
         let retryParameters = RetryParameters(delaySeconds: delaySeconds)
         
-        XCTAssertTrue(retryParameters.delaySeconds == delaySeconds)
+        #expect(retryParameters.delaySeconds == delaySeconds)
     }
 }

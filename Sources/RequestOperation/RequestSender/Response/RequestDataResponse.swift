@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class RequestDataResponse {
+public final class RequestDataResponse: Sendable {
     
     public let data: Data
     public let urlResponse: URLResponse

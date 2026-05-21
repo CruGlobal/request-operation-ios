@@ -6,13 +6,14 @@
 //  Copyright © 2024 Cru. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import RequestOperation
+import Foundation
 
-class RequestBuilderParametersTests: XCTestCase {
+struct RequestBuilderParametersTests {
     
-    func testInitWithURLSession() {
-        
+    @Test func initWithURLSession() throws {
+            
         let requestCachePolicy: NSURLRequest.CachePolicy = .reloadIgnoringCacheData
         let timeoutIntervalSeconds: TimeInterval = 30
         let urlString: String = "url-string"
@@ -33,7 +34,7 @@ class RequestBuilderParametersTests: XCTestCase {
         
         let session = URLSession(configuration: configuration)
         
-        let parameters = RequestBuilderParameters(
+        let parameters = try RequestBuilderParameters(
             urlSession: session,
             urlString: urlString,
             method: method,
@@ -43,18 +44,20 @@ class RequestBuilderParametersTests: XCTestCase {
             timeoutIntervalForRequest: nil
         )
         
-        XCTAssertTrue(parameters.requestCachePolicy == requestCachePolicy)
-        XCTAssertTrue(parameters.timeoutIntervalForRequest == timeoutIntervalSeconds)
-        XCTAssertTrue(parameters.urlString == urlString)
-        XCTAssertTrue(parameters.method == method)
-        XCTAssertTrue(parameters.headers == headers)
-        XCTAssertTrue(parameters.httpBody?.count == 1)
-        XCTAssertTrue(parameters.httpBody?["param_1"] as? Int == 1)
-        XCTAssertTrue(parameters.queryItems == queryItems)
+        let httpBodyObject: [String: Any] = try parameters.getHttpBodyObject()
+        
+        #expect(parameters.requestCachePolicy == requestCachePolicy)
+        #expect(parameters.timeoutIntervalForRequest == timeoutIntervalSeconds)
+        #expect(parameters.urlString == urlString)
+        #expect(parameters.method == method)
+        #expect(parameters.headers == headers)
+        #expect(httpBodyObject.count == 1)
+        #expect(httpBodyObject["param_1"] as? Int == 1)
+        #expect(parameters.queryItems == queryItems)
     }
     
-    func testInitWithURLSessionUsesProvidedTimeoutIntervalForRequest() {
-        
+    @Test func initWithURLSessionUsesProvidedTimeoutIntervalForRequest() throws {
+            
         let requestCachePolicy: NSURLRequest.CachePolicy = .reloadIgnoringCacheData
         let urlString: String = "url-string"
         let method: RequestMethod = .delete
@@ -76,7 +79,7 @@ class RequestBuilderParametersTests: XCTestCase {
         
         let providedTimeoutIntervalSeconds: TimeInterval = 30
         
-        let parameters = RequestBuilderParameters(
+        let parameters = try RequestBuilderParameters(
             urlSession: session,
             urlString: urlString,
             method: method,
@@ -86,18 +89,20 @@ class RequestBuilderParametersTests: XCTestCase {
             timeoutIntervalForRequest: providedTimeoutIntervalSeconds
         )
         
-        XCTAssertTrue(parameters.requestCachePolicy == requestCachePolicy)
-        XCTAssertTrue(parameters.timeoutIntervalForRequest == providedTimeoutIntervalSeconds)
-        XCTAssertTrue(parameters.urlString == urlString)
-        XCTAssertTrue(parameters.method == method)
-        XCTAssertTrue(parameters.headers == headers)
-        XCTAssertTrue(parameters.httpBody?.count == 1)
-        XCTAssertTrue(parameters.httpBody?["param_1"] as? Int == 1)
-        XCTAssertTrue(parameters.queryItems == queryItems)
-    }
-    
-    func testInitWithURLSessionConfiguration() {
+        let httpBodyObject: [String: Any] = try parameters.getHttpBodyObject()
         
+        #expect(parameters.requestCachePolicy == requestCachePolicy)
+        #expect(parameters.timeoutIntervalForRequest == providedTimeoutIntervalSeconds)
+        #expect(parameters.urlString == urlString)
+        #expect(parameters.method == method)
+        #expect(parameters.headers == headers)
+        #expect(httpBodyObject.count == 1)
+        #expect(httpBodyObject["param_1"] as? Int == 1)
+        #expect(parameters.queryItems == queryItems)
+    }
+        
+    @Test func initWithURLSessionConfiguration() throws {
+            
         let requestCachePolicy: NSURLRequest.CachePolicy = .reloadIgnoringCacheData
         let timeoutIntervalSeconds: TimeInterval = 30
         let urlString: String = "url-string"
@@ -116,7 +121,7 @@ class RequestBuilderParametersTests: XCTestCase {
         
         configuration.timeoutIntervalForRequest = timeoutIntervalSeconds
                 
-        let parameters = RequestBuilderParameters(
+        let parameters = try RequestBuilderParameters(
             configuration: configuration,
             urlString: urlString,
             method: method,
@@ -126,18 +131,20 @@ class RequestBuilderParametersTests: XCTestCase {
             timeoutIntervalForRequest: nil
         )
         
-        XCTAssertTrue(parameters.requestCachePolicy == requestCachePolicy)
-        XCTAssertTrue(parameters.timeoutIntervalForRequest == timeoutIntervalSeconds)
-        XCTAssertTrue(parameters.urlString == urlString)
-        XCTAssertTrue(parameters.method == method)
-        XCTAssertTrue(parameters.headers == headers)
-        XCTAssertTrue(parameters.httpBody?.count == 1)
-        XCTAssertTrue(parameters.httpBody?["param_1"] as? Int == 1)
-        XCTAssertTrue(parameters.queryItems == queryItems)
-    }
-    
-    func testInitWithURLSessionConfigurationUsesProvidedTimeoutIntervalForRequest() {
+        let httpBodyObject: [String: Any] = try parameters.getHttpBodyObject()
         
+        #expect(parameters.requestCachePolicy == requestCachePolicy)
+        #expect(parameters.timeoutIntervalForRequest == timeoutIntervalSeconds)
+        #expect(parameters.urlString == urlString)
+        #expect(parameters.method == method)
+        #expect(parameters.headers == headers)
+        #expect(httpBodyObject.count == 1)
+        #expect(httpBodyObject["param_1"] as? Int == 1)
+        #expect(parameters.queryItems == queryItems)
+    }
+        
+    @Test func initWithURLSessionConfigurationUsesProvidedTimeoutIntervalForRequest() throws {
+            
         let requestCachePolicy: NSURLRequest.CachePolicy = .reloadIgnoringCacheData
         let urlString: String = "url-string"
         let method: RequestMethod = .delete
@@ -157,7 +164,7 @@ class RequestBuilderParametersTests: XCTestCase {
         
         let providedTimeoutIntervalSeconds: TimeInterval = 30
         
-        let parameters = RequestBuilderParameters(
+        let parameters = try RequestBuilderParameters(
             configuration: configuration,
             urlString: urlString,
             method: method,
@@ -167,13 +174,15 @@ class RequestBuilderParametersTests: XCTestCase {
             timeoutIntervalForRequest: providedTimeoutIntervalSeconds
         )
         
-        XCTAssertTrue(parameters.requestCachePolicy == requestCachePolicy)
-        XCTAssertTrue(parameters.timeoutIntervalForRequest == providedTimeoutIntervalSeconds)
-        XCTAssertTrue(parameters.urlString == urlString)
-        XCTAssertTrue(parameters.method == method)
-        XCTAssertTrue(parameters.headers == headers)
-        XCTAssertTrue(parameters.httpBody?.count == 1)
-        XCTAssertTrue(parameters.httpBody?["param_1"] as? Int == 1)
-        XCTAssertTrue(parameters.queryItems == queryItems)
+        let httpBodyObject: [String: Any] = try parameters.getHttpBodyObject()
+                
+        #expect(parameters.requestCachePolicy == requestCachePolicy)
+        #expect(parameters.timeoutIntervalForRequest == providedTimeoutIntervalSeconds)
+        #expect(parameters.urlString == urlString)
+        #expect(parameters.method == method)
+        #expect(parameters.headers == headers)
+        #expect(httpBodyObject.count == 1)
+        #expect(httpBodyObject["param_1"] as? Int == 1)
+        #expect(parameters.queryItems == queryItems)
     }
 }

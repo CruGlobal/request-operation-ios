@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class RequestCodableResponse<SuccessCodable: Codable, FailureCodable: Codable> {
+public final class RequestCodableResponse<SuccessCodable: Codable & Sendable, FailureCodable: Codable & Sendable>: Sendable {
     
     public let successCodable: SuccessCodable?
     public let failureCodable: FailureCodable?

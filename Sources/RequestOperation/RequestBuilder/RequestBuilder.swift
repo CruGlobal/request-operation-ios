@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class RequestBuilder {
+public final class RequestBuilder: Sendable {
     
     public let requestMutators: [RequestMutator]
     
@@ -22,12 +22,12 @@ open class RequestBuilder {
         self.requestMutators = requestMutators ?? requestBuilder.requestMutators
     }
     
-    open func clone(requestMutators: [RequestMutator]? = nil) -> RequestBuilder {
+    public func clone(requestMutators: [RequestMutator]? = nil) -> RequestBuilder {
         
         return RequestBuilder(requestBuilder: self, requestMutators: requestMutators ?? self.requestMutators)
     }
     
-    open func build(parameters: RequestBuilderParameters) -> URLRequest {
+    public func build(parameters: RequestBuilderParameters) -> URLRequest {
         
         let url: URL?
         
@@ -51,23 +51,13 @@ open class RequestBuilder {
             return URLRequest(url: url!)
         }
         
-        let result: Result<URLRequest, Error> = build(
+        return build(
             url: url,
             parameters: parameters
         )
-        
-        switch result {
-        
-        case .success(let request):
-            return request
-        
-        case .failure(let error):
-            assertionFailure(error.localizedDescription)
-            return URLRequest(url: url)
-        }
     }
     
-    open func build(url: URL, parameters: RequestBuilderParameters) -> Result<URLRequest, Error> {
+    public func build(url: URL, parameters: RequestBuilderParameters) -> URLRequest {
                 
         var urlRequest = URLRequest(
             url: url,
@@ -83,22 +73,13 @@ open class RequestBuilder {
         }
         
         urlRequest.httpMethod = parameters.method.rawValue
-        
-        if let httpBody = parameters.httpBody {
-            
-            do {
-                urlRequest.httpBody = try JSONSerialization.data(withJSONObject: httpBody, options: [])
-            }
-            catch let error {
-                return .failure(error)
-            }
-        }
+        urlRequest.httpBody = parameters.httpBody
         
         for requestMutator in requestMutators {
             requestMutator.mutate(request: &urlRequest, parameters: parameters)
         }
     
-        return .success(urlRequest)
+        return urlRequest
     }
 }
 

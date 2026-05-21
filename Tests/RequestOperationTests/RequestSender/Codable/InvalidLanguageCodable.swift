@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct InvalidLanguageCodable: Codable {
+struct InvalidLanguageCodable: Codable, Sendable {
     
     let code: String
     let id: String

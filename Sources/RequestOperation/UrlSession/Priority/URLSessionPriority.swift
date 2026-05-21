@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class URLSessionPriority {
+public final class URLSessionPriority: Sendable {
     
     private let lowPriorityQueue: URLSessionQueue
     private let mediumPriorityQueue: URLSessionQueue

@@ -7,38 +7,33 @@
 //
 
 import Foundation
-import Combine
 
-open class RequestSender {
+public final class RequestSender: Sendable {
             
     public init() {
         
     }
     
-    open func sendDataTask(urlRequest: URLRequest, urlSession: URLSession) async throws -> RequestDataResponse {
+    public func sendDataTask(urlRequest: URLRequest, urlSession: URLSession) async throws -> RequestDataResponse {
         
-        let tuple: (data: Data, response: URLResponse) = try await urlSession.data(for: urlRequest)
-        
-        let response = RequestDataResponse(
-            data: tuple.data,
-            urlResponse: tuple.response
-        )
-        
-        return response
-    }
-    
-    open func sendDataTaskPublisher(urlRequest: URLRequest, urlSession: URLSession) -> AnyPublisher<RequestDataResponse, Error> {
-                
-        return urlSession.dataTaskPublisher(for: urlRequest)
-            .map { (tuple: (data: Data, response: URLResponse)) in
-                RequestDataResponse(
-                    data: tuple.data,
-                    urlResponse: tuple.response
-                )
+        do {
+            
+            let tuple: (data: Data, response: URLResponse) = try await urlSession.data(for: urlRequest)
+            
+            let response = RequestDataResponse(
+                data: tuple.data,
+                urlResponse: tuple.response
+            )
+            
+            return response
+        }
+        catch let error {
+            
+            if let urlError = error as? URLError {
+                throw urlError.toError()
             }
-            .mapError { (urlError: URLError) in
-                return urlError.toError()
-            }
-            .eraseToAnyPublisher()
+            
+            throw error
+        }
     }
 }

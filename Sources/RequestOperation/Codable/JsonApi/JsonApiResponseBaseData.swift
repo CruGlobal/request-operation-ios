@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct JsonApiResponseBaseData: Codable {
+public struct JsonApiResponseBaseData: Codable, Sendable {
     
     public let id: String
     public let type: String

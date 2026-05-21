@@ -6,27 +6,63 @@
 //  Copyright © 2024 Cru. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import RequestOperation
-import Combine
+import Foundation
 
-class RequestSenderTests: XCTestCase {
- 
-    static let languagesUrl: String = "https://mobile-content-api-stage.cru.org/languages"
-    static let englishLanguageId: String = "4"
-    static let invalidLanguageId: String = "-37469355108471600907768582811183"
+struct RequestSenderTests {
     
-    var cancellables: Set<AnyCancellable> = Set()
+    let urlSession: URLSession = CreateUrlSession().createIgnoreCacheSession(timeoutIntervalForRequest: 10)
+    let languagesUrl: String = "https://mobile-content-api-stage.cru.org/languages"
+    let englishLanguageId: String = "4"
+    let invalidLanguageId: String = "32984724"
     
-    static func buildGetLanguageUrlRequest(urlSession: URLSession, languageId: String) -> URLRequest {
+    @Test
+    func sendDataIsSuccessfulHttpStatusCode() async throws {
         
+        let requestSender = RequestSender()
+        
+        let urlRequest: URLRequest = try getLanguageUrlRequest(
+            languageId: englishLanguageId
+        )
+        
+        let response = try await requestSender.sendDataTask(urlRequest: urlRequest, urlSession: urlSession)
+        
+        #expect(response.urlResponse.isSuccessHttpStatusCode == true)
+    }
+    
+    @Test
+    func sendDataIsUnSuccessfulHttpStatusCode() async throws {
+        
+        let requestSender = RequestSender()
+        
+        let urlRequest: URLRequest = try getLanguageUrlRequest(
+            languageId: invalidLanguageId
+        )
+        
+        let response = try await requestSender.sendDataTask(urlRequest: urlRequest, urlSession: urlSession)
+        
+        #expect(response.urlResponse.isSuccessHttpStatusCode == false)
+    }
+}
+
+extension RequestSenderTests {
+    
+    func getLanguageUrlRequest(languageId: String) throws -> URLRequest {
+        
+        let urlString: String = languagesUrl + "/" + languageId
+        
+        return try getLanguageUrlRequest(urlString: urlString)
+    }
+    
+    func getLanguageUrlRequest(urlString: String) throws -> URLRequest {
+                
         let requestBuilder = RequestBuilder()
         
-        let urlString: String = Self.languagesUrl + "/" + languageId
         let requestMethod: RequestMethod = .get
         let contentType: String = "application/vnd.api+json"
         
-        let urlRequest: URLRequest = requestBuilder.build(
+        let urlRequest: URLRequest = try requestBuilder.build(
             parameters: RequestBuilderParameters(
                 urlSession: urlSession,
                 urlString: urlString,
@@ -38,67 +74,5 @@ class RequestSenderTests: XCTestCase {
         )
         
         return urlRequest
-    }
-    
-    func testSendUrlRequestIsSuccessful() {
-        
-        let timeoutSeconds: TimeInterval = 15
-        
-        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
-                
-        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.englishLanguageId)
-
-        let requestSender = RequestSender()
-        
-        let expectation = expectation(description: "")
-        
-        var responseRef: RequestDataResponse?
-        
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
-            .sink { completion in
-                
-                expectation.fulfill()
-                
-            } receiveValue: { (response: RequestDataResponse) in
-                
-                responseRef = response
-            }
-            .store(in: &cancellables)
-        
-        wait(for: [expectation], timeout: timeoutSeconds)
-        
-        XCTAssertNotNil(responseRef)
-        XCTAssertTrue(responseRef!.urlResponse.isSuccessHttpStatusCode)
-    }
-    
-    func testSendUrlRequestIsUnSuccessful() {
-        
-        let timeoutSeconds: TimeInterval = 15
-        
-        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
-        
-        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: Self.invalidLanguageId)
-        
-        let requestSender = RequestSender()
-        
-        let expectation = expectation(description: "")
-        
-        var responseRef: RequestDataResponse?
-        
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
-            .sink { completion in
-                
-                expectation.fulfill()
-                
-            } receiveValue: { (response: RequestDataResponse) in
-                
-                responseRef = response
-            }
-            .store(in: &cancellables)
-        
-        wait(for: [expectation], timeout: timeoutSeconds)
-        
-        XCTAssertNotNil(responseRef)
-        XCTAssertFalse(responseRef!.urlResponse.isSuccessHttpStatusCode)
     }
 }

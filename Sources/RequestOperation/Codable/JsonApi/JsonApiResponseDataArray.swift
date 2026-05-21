@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct JsonApiResponseDataArray<T: Codable>: Codable {
+public struct JsonApiResponseDataArray<T: Codable & Sendable>: Codable, Sendable {
     
     public let dataArray: [T]
     

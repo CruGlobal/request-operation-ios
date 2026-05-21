@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum RetryPolicy {
+public enum RetryPolicy: Sendable {
     
     case doNotRetry
     case retry(parameters: RetryParameters)

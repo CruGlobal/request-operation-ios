@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class RetryParameters {
+public struct RetryParameters: Sendable {
     
     public let delaySeconds: TimeInterval?
     

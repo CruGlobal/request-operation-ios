@@ -8,6 +8,6 @@
 
 import Foundation
 
-public struct NoResponseCodable: Codable {
+public struct NoResponseCodable: Codable, Sendable {
     
 }

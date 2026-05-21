@@ -6,9 +6,10 @@
 //  Copyright © 2024 Cru. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import RequestOperation
+import Foundation
 
-class RequestControllerTests: XCTestCase {
+struct RequestControllerTests {
     
 }

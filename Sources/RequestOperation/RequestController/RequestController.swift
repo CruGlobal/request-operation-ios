@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import Combine
 
-open class RequestController {
+public final class RequestController: Sendable {
     
     public let requestBuilder: RequestBuilder
     public let requestSender: RequestSender
@@ -22,9 +21,18 @@ open class RequestController {
         self.requestRetrier = requestRetrier
     }
     
-    open func buildAndSendRequestPublisher<SuccessCodable: Codable, FailureCodable: Codable>(urlSession: URLSession, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval? = nil, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<RequestCodableResponse<SuccessCodable, FailureCodable>, Error> {
+    public func buildAndSendRequest<SuccessCodable: Codable, FailureCodable: Codable>(
+        urlSession: URLSession,
+        urlString: String,
+        method: RequestMethod,
+        headers: [String: String]?,
+        httpBody: [String: Any]?,
+        queryItems: [URLQueryItem]?,
+        timeoutIntervalForRequest: TimeInterval? = nil,
+        decoder: JSONDecoder = JSONDecoder()
+    ) async throws -> RequestCodableResponse<SuccessCodable, FailureCodable> {
         
-        return internalBuildAndSendRequestPublisher(
+        return try await internalBuildAndSendRequest(
             urlSession: urlSession,
             urlString: urlString,
             method: method,
@@ -34,13 +42,20 @@ open class RequestController {
             timeoutIntervalForRequest: timeoutIntervalForRequest
         )
         .decodeRequestDataResponseForSuccessOrFailureCodable(decoder: decoder)
-        .eraseToAnyPublisher()
     }
     
-    private func internalBuildAndSendRequestPublisher(urlSession: URLSession, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
+    private func internalBuildAndSendRequest(
+        urlSession: URLSession,
+        urlString: String,
+        method: RequestMethod,
+        headers: [String: String]?,
+        httpBody: [String: Any]?,
+        queryItems: [URLQueryItem]?,
+        timeoutIntervalForRequest: TimeInterval?
+    ) async throws -> RequestDataResponse {
         
         let urlRequest: URLRequest = requestBuilder.build(
-            parameters: RequestBuilderParameters(
+            parameters: try RequestBuilderParameters(
                 urlSession: urlSession,
                 urlString: urlString,
                 method: method,
@@ -51,69 +66,60 @@ open class RequestController {
             )
         )
         
-        return requestSender
-            .sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
-            .flatMap({ (response: RequestDataResponse) -> AnyPublisher<RequestDataResponse, Error> in
-                
-                return self.retryRequestIfNeededPublisher(
-                    response: response,
-                    urlSession: urlSession,
-                    urlString: urlString,
-                    method: method,
-                    headers: headers,
-                    httpBody: httpBody,
-                    queryItems: queryItems,
-                    timeoutIntervalForRequest: timeoutIntervalForRequest
-                )
-            })
-            .eraseToAnyPublisher()
+        let response = try await requestSender
+            .sendDataTask(
+                urlRequest: urlRequest,
+                urlSession: urlSession
+            )
+        
+        return try await retryRequestIfNeeded(
+            response: response,
+            urlSession: urlSession,
+            urlString: urlString,
+            method: method,
+            headers: headers,
+            httpBody: httpBody,
+            queryItems: queryItems,
+            timeoutIntervalForRequest: timeoutIntervalForRequest
+        )
     }
     
-    private func retryRequestIfNeededPublisher(response: RequestDataResponse, urlSession: URLSession, urlString: String, method: RequestMethod, headers: [String: String]?, httpBody: [String: Any]?, queryItems: [URLQueryItem]?, timeoutIntervalForRequest: TimeInterval?) -> AnyPublisher<RequestDataResponse, Error> {
+    private func retryRequestIfNeeded(
+        response: RequestDataResponse,
+        urlSession: URLSession,
+        urlString: String,
+        method: RequestMethod,
+        headers: [String: String]?,
+        httpBody: [String: Any]?,
+        queryItems: [URLQueryItem]?,
+        timeoutIntervalForRequest: TimeInterval?
+    ) async throws -> RequestDataResponse {
         
         guard let requestRetrier = self.requestRetrier else {
-            return Just(response)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
+            return response
         }
         
-        return requestRetrier.shouldRetryRequestPublisher(
+        let retryPolicy: RetryPolicy = requestRetrier.shouldRetryRequest(
             response: response,
             httpStatusCode: response.urlResponse.httpStatusCode,
             isSuccessHttpStatusCode: response.urlResponse.isSuccessHttpStatusCode
         )
-        .setFailureType(to: Error.self)
-        .flatMap({ [weak self] (retryPolicy: RetryPolicy) -> AnyPublisher<RequestDataResponse, Error> in
-                   
-            guard let weakSelf = self else {
-                
-                return Just(response)
-                    .setFailureType(to: Error.self)
-                    .eraseToAnyPublisher()
-            }
+        
+        switch retryPolicy {
+       
+        case .doNotRetry:
+            return response
             
-            switch retryPolicy {
-           
-            case .doNotRetry:
-                
-                return Just(response)
-                    .setFailureType(to: Error.self)
-                    .eraseToAnyPublisher()
-                
-            case .retry( _):
-                
-                return weakSelf.internalBuildAndSendRequestPublisher(
-                    urlSession: urlSession,
-                    urlString: urlString,
-                    method: method,
-                    headers: headers,
-                    httpBody: httpBody,
-                    queryItems: queryItems,
-                    timeoutIntervalForRequest: timeoutIntervalForRequest
-                )
-                .eraseToAnyPublisher()
-            }
-        })
-        .eraseToAnyPublisher()
+        case .retry( _):
+            return try await internalBuildAndSendRequest(
+                urlSession: urlSession,
+                urlString: urlString,
+                method: method,
+                headers: headers,
+                httpBody: httpBody,
+                queryItems: queryItems,
+                timeoutIntervalForRequest: timeoutIntervalForRequest
+            )
+        }
     }
 }

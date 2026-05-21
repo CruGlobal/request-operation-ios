@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class URLSessionQueue {
+public final class URLSessionQueue: Sendable {
     
     private let operationQueue: OperationQueue
     private let urlSession: URLSession
