@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct JsonApiFilter {
+public struct JsonApiFilter: Sendable {
     
     public typealias Name = String
     public typealias Value = String

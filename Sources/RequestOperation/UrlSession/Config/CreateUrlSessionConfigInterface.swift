@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol CreateUrlSessionConfigInterface {
+public protocol CreateUrlSessionConfigInterface: Sendable {
     
     func createConfig(timeoutIntervalForRequest: TimeInterval) -> URLSessionConfiguration
 }

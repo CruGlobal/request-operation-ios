@@ -1,5 +1,5 @@
 //
-//  LanguageModel.swift
+//  LanguageCodable.swift
 //  request-operation-ios
 //
 //  Created by Levi Eggert on 9/13/2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct LanguageModel: Codable {
+struct LanguageCodable: Codable, Sendable {
     
     let code: String
     let directionString: String

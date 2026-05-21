@@ -9,9 +9,9 @@ import Foundation
 
 extension RequestDataResponse {
     
-    public func validate() throws -> RequestDataResponse {
+    public func validate(successRange: Range<Int> = URLResponse.httpStatusCodeSuccessRange) throws -> RequestDataResponse {
         
-        guard let httpStatusCode = urlResponse.httpStatusCode, URLResponse.getIsSuccessHttpStatusCode(httpStatusCode: httpStatusCode) else {
+        guard let httpStatusCode = urlResponse.httpStatusCode, URLResponse.getIsSuccessHttpStatusCode(httpStatusCode: httpStatusCode, successRange: successRange) else {
             throw toError()
         }
         

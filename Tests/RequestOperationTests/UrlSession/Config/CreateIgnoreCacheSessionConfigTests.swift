@@ -5,23 +5,25 @@
 //  Created by Levi Eggert on 5/30/25.
 //
 
-import XCTest
+import Testing
 @testable import RequestOperation
+import Foundation
 
-class CreateIgnoreCacheSessionConfigTests: XCTestCase {
+struct CreateIgnoreCacheSessionConfigTests {
     
-    func testCreateIgnoreCacheSessionIgnoresTheCache() {
+    @Test
+    func createIgnoreCacheSessionIgnoresTheCache() {
         
         let ignoreCacheSesion: URLSession = URLSession(configuration: CreateIgnoreCacheSessionConfig().createConfig())
         
-        XCTAssertTrue(ignoreCacheSesion.configuration.requestCachePolicy == .reloadIgnoringLocalCacheData, "requestCachePolicy should equal reloadIgnoringLocalCacheData")
-        XCTAssertNil(ignoreCacheSesion.configuration.urlCache, "urlCache should be nil")
-        
-        XCTAssertTrue(ignoreCacheSesion.configuration.httpShouldSetCookies == false, "httpShouldSetCookies should be false")
-        XCTAssertNil(ignoreCacheSesion.configuration.httpCookieStorage, "httpCookieStorage should be nil")
+        #expect(ignoreCacheSesion.configuration.requestCachePolicy == .reloadIgnoringLocalCacheData)
+        #expect(ignoreCacheSesion.configuration.urlCache == nil)
+        #expect(ignoreCacheSesion.configuration.httpShouldSetCookies == false)
+        #expect(ignoreCacheSesion.configuration.httpCookieStorage == nil)
     }
     
-    func testCreateIgnoreCacheSessionTimeoutIsCorrect() {
+    @Test
+    func createIgnoreCacheSessionTimeoutIsCorrect() {
         
         let timeoutInterval: TimeInterval = 12
         
@@ -29,6 +31,6 @@ class CreateIgnoreCacheSessionConfigTests: XCTestCase {
             configuration: CreateIgnoreCacheSessionConfig().createConfig(timeoutIntervalForRequest: timeoutInterval)
         )
         
-        XCTAssertTrue(ignoreCacheSesion.configuration.timeoutIntervalForRequest == timeoutInterval)
+        #expect(ignoreCacheSesion.configuration.timeoutIntervalForRequest == timeoutInterval)
     }
 }

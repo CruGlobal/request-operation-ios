@@ -6,102 +6,61 @@
 //  Copyright © 2024 Cru. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import RequestOperation
-import Combine
+import Foundation
 
 extension RequestSenderTests {
     
-    func testValidateThrowsErrorWhenResponseHttpStatusCodeFallsOutsideOfValidateRange() {
+    @Test()
+    func validateFailsWithErrorWhenResponseHttpStatusCodeFallsOutsideOfValidateRange() async throws {
+                   
+        let urlRequest: URLRequest = try getLanguageUrlRequest(languageId: invalidLanguageId)
         
-        let timeoutSeconds: TimeInterval = 15
-        
-        let languageId: String = Self.invalidLanguageId
-        
-        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
-        
-        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
-
         let requestSender = RequestSender()
-        
-        let expectation = expectation(description: "")
         
         let httpStatusCodeSuccessRange: Range<Int> = URLResponse.httpStatusCodeSuccessRange
         
-        var errorRef: Error?
+        let errorRef: Error?
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
-            .validate(successRange: httpStatusCodeSuccessRange)
-            .sink { completion in
-                
-                switch completion {
-                case .finished:
-                    break
-                    
-                case .failure(let error):
-                    errorRef = error
-                }
-                
-                expectation.fulfill()
-                
-            } receiveValue: { (response: RequestDataResponse) in
-                
-            }
-            .store(in: &cancellables)
+        do {
+            
+            _ = try await requestSender
+                .sendDataTask(
+                    urlRequest: urlRequest,
+                    urlSession: urlSession
+                )
+                .validate(successRange: httpStatusCodeSuccessRange)
+            
+            errorRef = nil
+        }
+        catch let error {
+            errorRef = error
+        }
         
-        wait(for: [expectation], timeout: timeoutSeconds)
+        let error: Error = try #require(errorRef)
+        let response: RequestDataResponse = try #require(error.getRequestDataResponse())
+        let httpStatusCode: Int = try #require(response.urlResponse.httpStatusCode)
         
-        let responseRef: RequestDataResponse? = errorRef?.getRequestDataResponse()
-        
-        XCTAssertNotNil(errorRef)
-        XCTAssertNotNil(responseRef)
-        XCTAssertTrue(errorRef!.isRequestDataResponse)
-        XCTAssertTrue((errorRef as? NSError)?.domain == RequestDataResponse.toErrorDomain)
-        XCTAssertNotNil(responseRef?.urlResponse.httpStatusCode)
-        XCTAssertTrue(!httpStatusCodeSuccessRange.contains(responseRef!.urlResponse.httpStatusCode!))
+        #expect(error.isRequestDataResponse == true)
+        #expect((error as NSError).domain == RequestDataResponse.toErrorDomain)
+        #expect(!httpStatusCodeSuccessRange.contains(httpStatusCode))
     }
     
-    func testValidateIsSuccessfulWhenResponseHttpStatusCodeFallsWithinValidateRange() {
+    @Test()
+    func validateIsSuccessfulWhenResponseHttpStatusCodeFallsWithinValidateRange() async throws {
         
-        let timeoutSeconds: TimeInterval = 15
-        
-        let languageId: String = Self.englishLanguageId
-        
-        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
-        
-        let urlRequest: URLRequest = Self.buildGetLanguageUrlRequest(urlSession: urlSession, languageId: languageId)
+        let urlRequest: URLRequest = try getLanguageUrlRequest(languageId: englishLanguageId)
 
         let requestSender = RequestSender()
-        
-        let expectation = expectation(description: "")
-        
+                
         let httpStatusCodeSuccessRange: Range<Int> = URLResponse.httpStatusCodeSuccessRange
         
-        var responseRef: RequestDataResponse?
-        
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
+        let response = try await requestSender.sendDataTask(urlRequest: urlRequest, urlSession: urlSession)
             .validate(successRange: httpStatusCodeSuccessRange)
-            .sink { completion in
-                
-                switch completion {
-                case .finished:
-                    break
-                    
-                case .failure( _):
-                    break
-                }
-                
-                expectation.fulfill()
-                
-            } receiveValue: { (response: RequestDataResponse) in
-                
-                responseRef = response
-            }
-            .store(in: &cancellables)
         
-        wait(for: [expectation], timeout: timeoutSeconds)
+        let httpStatusCode: Int = try #require(response.urlResponse.httpStatusCode)
         
-        XCTAssertNotNil(responseRef?.urlResponse.httpStatusCode)
-        XCTAssertTrue(httpStatusCodeSuccessRange.contains(responseRef!.urlResponse.httpStatusCode!))
+        #expect(httpStatusCodeSuccessRange.contains(httpStatusCode))
     }
 }

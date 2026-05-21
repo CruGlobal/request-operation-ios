@@ -25,8 +25,8 @@ extension URLResponse {
         return Self.getIsSuccessHttpStatusCode(httpStatusCode: httpStatusCode)
     }
     
-    public static func getIsSuccessHttpStatusCode(httpStatusCode: Int) -> Bool {
+    public static func getIsSuccessHttpStatusCode(httpStatusCode: Int, successRange: Range<Int> = URLResponse.httpStatusCodeSuccessRange) -> Bool {
         
-        return URLResponse.httpStatusCodeSuccessRange.contains(httpStatusCode)
+        return successRange.contains(httpStatusCode)
     }
 }

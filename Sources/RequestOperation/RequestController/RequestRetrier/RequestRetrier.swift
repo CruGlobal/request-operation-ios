@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import Combine
 
-public protocol RequestRetrier {
+public protocol RequestRetrier: Sendable {
     
-    func shouldRetryRequestPublisher(response: RequestDataResponse, httpStatusCode: Int?, isSuccessHttpStatusCode: Bool) -> AnyPublisher<RetryPolicy, Never>
+    func shouldRetryRequest(response: RequestDataResponse, httpStatusCode: Int?, isSuccessHttpStatusCode: Bool) -> RetryPolicy
 }

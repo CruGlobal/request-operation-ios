@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol RequestMutator {
+public protocol RequestMutator: Sendable {
     
     func mutate(request: inout URLRequest, parameters: RequestBuilderParameters)
 }

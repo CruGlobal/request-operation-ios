@@ -6,18 +6,15 @@
 //  Copyright © 2024 Cru. All rights reserved.
 //
 
-import XCTest
+import Testing
 @testable import RequestOperation
-import Combine
+import Foundation
 
 extension RequestSenderTests {
     
-    func testSendUrlRequestFailedWithUrlError() {
-        
-        let timeoutSeconds: TimeInterval = 15
-        
-        let urlSession: URLSession = RequestUrlSession.createIgnoreCacheSession(timeoutIntervalForRequest: timeoutSeconds)
-        
+    @Test()
+    func sendDataTaskUrlErrorToError() async throws {
+                                
         let requestBuilder = RequestBuilder()
         
         let urlWithBadHost: String = "https://37469355108471600907768582811183.com/languages/4"
@@ -25,7 +22,7 @@ extension RequestSenderTests {
         let requestMethod: RequestMethod = .get
         let contentType: String = "application/vnd.api+json"
         
-        let urlRequest: URLRequest = requestBuilder.build(
+        let urlRequest: URLRequest = try requestBuilder.build(
             parameters: RequestBuilderParameters(
                 urlSession: urlSession,
                 urlString: urlString,
@@ -38,33 +35,20 @@ extension RequestSenderTests {
 
         let requestSender = RequestSender()
         
-        let expectation = expectation(description: "")
+        let errorRef: Error?
         
-        var errorRef: Error?
+        do {
+            _ = try await requestSender.sendDataTask(urlRequest: urlRequest, urlSession: urlSession)
+            errorRef = nil
+        }
+        catch let error {
+            errorRef = error
+        }
         
-        requestSender.sendDataTaskPublisher(urlRequest: urlRequest, urlSession: urlSession)
-            .sink { completion in
-                
-                switch completion {
-                case .finished:
-                    break
-                    
-                case .failure(let error):
-                    errorRef = error
-                }
-                
-                expectation.fulfill()
-                
-            } receiveValue: { (response: RequestDataResponse) in
-                
-            }
-            .store(in: &cancellables)
+        let error: Error = try #require(errorRef)
         
-        wait(for: [expectation], timeout: timeoutSeconds)
-        
-        XCTAssertNotNil(errorRef)
-        XCTAssertNotNil(errorRef?.getUrlError())
-        XCTAssertTrue(errorRef!.isUrlError)
-        XCTAssertTrue((errorRef as? NSError)?.domain == URLError.toErrorDomain)
+        #expect(error.getUrlError() != nil)
+        #expect(error.isUrlError == true)
+        #expect((error as NSError).domain == URLError.toErrorDomain)
     }
 }
