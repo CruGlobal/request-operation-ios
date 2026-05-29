@@ -54,7 +54,7 @@ public final class RequestController: Sendable {
         timeoutIntervalForRequest: TimeInterval?
     ) async throws -> RequestDataResponse {
         
-        let urlRequest: URLRequest = requestBuilder.build(
+        let urlRequest: URLRequest = try requestBuilder.build(
             parameters: try RequestBuilderParameters(
                 urlSession: urlSession,
                 urlString: urlString,

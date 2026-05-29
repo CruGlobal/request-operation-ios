@@ -27,7 +27,7 @@ public final class RequestBuilder: Sendable {
         return RequestBuilder(requestBuilder: self, requestMutators: requestMutators ?? self.requestMutators)
     }
     
-    public func build(parameters: RequestBuilderParameters) -> URLRequest {
+    public func build(parameters: RequestBuilderParameters) throws -> URLRequest {
         
         let url: URL?
         
@@ -45,10 +45,7 @@ public final class RequestBuilder: Sendable {
         }
         
         guard let url = url else {
-            
-            let errorDescription: String = "Failed to build url with string: \(parameters.urlString)"
-            assertionFailure(errorDescription)
-            return URLRequest(url: url!)
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to build url with string: \(parameters.urlString)"])
         }
         
         return build(
