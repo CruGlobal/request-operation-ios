@@ -9,11 +9,15 @@ import Foundation
 
 public final class CreateIgnoreCacheSessionConfig: CreateUrlSessionConfigInterface {
     
+    public static let defaultTimeoutIntervalForRequest: TimeInterval = 60
+    
     public init() {
         
     }
     
-    public func createConfig(timeoutIntervalForRequest: TimeInterval = 60) -> URLSessionConfiguration {
+    public func createConfig(
+        timeoutIntervalForRequest: TimeInterval = CreateIgnoreCacheSessionConfig.defaultTimeoutIntervalForRequest
+    ) -> URLSessionConfiguration {
         
         let configuration = URLSessionConfiguration.ephemeral
         configuration.requestCachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
