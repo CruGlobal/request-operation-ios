@@ -12,7 +12,11 @@ public final class URLSessionQueue: Sendable {
     private let operationQueue: OperationQueue
     private let urlSession: URLSession
     
-    public init(qualityOfService: QualityOfService, sessionDescription: String? = nil, configuration: URLSessionConfiguration = CreateIgnoreCacheSessionConfig().createConfig(timeoutIntervalForRequest: 60)) {
+    public init(
+        qualityOfService: QualityOfService,
+        sessionDescription: String? = nil,
+        configuration: URLSessionConfiguration
+    ) {
         
         operationQueue = Self.createSerialQueue(
             qualityOfService: qualityOfService
